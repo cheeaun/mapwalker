@@ -8,7 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: |
+      - env:
+          VITE_MAPBOX_ACCESS_TOKEN: ${{ secrets.VITE_MAPBOX_ACCESS_TOKEN }}
+          VITE_ORS_API_KEY: ${{ secrets.VITE_ORS_API_KEY }}
+        run: |
           npm ci
           npm run build
       - uses: JamesIves/github-pages-deploy-action@v4.2.2
