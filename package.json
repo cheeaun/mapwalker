@@ -1,0 +1,25 @@
+{
+  "name": "mapwalker",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mapbox/mapbox-gl-geocoder": "mapbox/mapbox-gl-geocoder",
+    "mapbox-gl": "~2.7.0",
+    "preact": "~10.6.6",
+    "react-map-gl": "~7.0.10"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "~2.1.7",
+    "vite": "~2.8.6"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "useTabs": false,
+    "singleQuote": true,
+    "trailingComma": "all"
+  }
+}

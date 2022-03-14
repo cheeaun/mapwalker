@@ -1,0 +1,145 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
+button {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+#map {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.mapboxgl-ctrl-group button,
+.mapboxgl-popup-content {
+  zoom: 1.5;
+}
+
+#overview-map {
+  pointer-events: none;
+  position: fixed;
+  width: calc(100% - 80px);
+  max-width: 240px;
+  height: 160px;
+  bottom: 10px;
+  left: 10px;
+  border-radius: 18px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4), 0 3px 15px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease-in-out;
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  overflow: hidden;
+}
+/* Safari fix */
+#overview-map canvas {
+  border-radius: 18px;
+}
+#overview-map.faded {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2), 0 3px 15px rgba(0, 0, 0, 0.15);
+}
+#overview-map .mapboxgl-canvas-container {
+  transition: opacity 0.3s ease-in-out;
+}
+#overview-map.faded .mapboxgl-canvas-container {
+  opacity: 0.5;
+}
+#overview-map[hidden] {
+  display: block;
+  opacity: 0;
+}
+#overview-map .mapboxgl-control-container {
+  display: none;
+}
+:root {
+  --overview-map-box-width: 100px;
+  --overview-map-box-height: 100px;
+}
+/* #overview-map:after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  content: '';
+  display: block;
+  width: var(--overview-map-box-width);
+  height: var(--overview-map-box-height);
+  border: 2px ridge rgba(255, 255, 255, 0.5);
+  border-radius: 2px;
+  mix-blend-mode: difference;
+} */
+
+#actions {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+#actions button {
+  background-color: #fff;
+  padding: 0.5em 0.75em;
+  border: 0;
+  margin: 0;
+  border-radius: 1em;
+  color: #333;
+  box-shadow: 0 1px 4px #aaa;
+  cursor: pointer;
+  font-size: 14px;
+  position: relative;
+}
+#actions button.faded {
+  opacity: 0.5;
+}
+#actions button:hover:after {
+  content: attr(title);
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-105%, -50%);
+  white-space: nowrap;
+  text-shadow: 0 1px #fff, 0 3px 5px #fff;
+}
+
+.loading {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border: 4px solid white;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 0.5s linear infinite;
+  mix-blend-mode: difference;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.mapboxgl-marker img {
+  vertical-align: middle;
+}
