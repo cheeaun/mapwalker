@@ -97,11 +97,13 @@ export function App() {
           onLoad={(e) => {
             geolocateControlRef.current?.trigger();
           }}
-          onMoveStart={() => {
+          onMoveStart={(e) => {
+            if (e.geolocateSource) return;
             if (overviewMapDivRef.current.hidden) return;
             overviewMapDivRef.current.classList.add('faded');
           }}
           onMoveEnd={(e) => {
+            if (e.geolocateSource) return;
             if (overviewMapDivRef.current.hidden) return;
             overviewMapDivRef.current.classList.remove('faded');
             LS.set('view-state', e.viewState);
