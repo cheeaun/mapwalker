@@ -12,6 +12,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
 import { fetchRoutes } from './apis';
 import LS from './ls';
+import pinImgURL from '../assets/pin.png';
 
 const { VITE_MAPBOX_ACCESS_TOKEN: MAPBOX_ACCESS_TOKEN } = import.meta.env;
 
@@ -178,11 +179,7 @@ export function App() {
               setDestinationMarker(lngLat);
             }}
           >
-            <img
-              src="../assets/pin.png"
-              width="18"
-              hidden={!destinationMarker}
-            />
+            <img src={pinImgURL} width="18" hidden={!destinationMarker} />
           </Marker>
         </Map>
       </div>
@@ -232,11 +229,7 @@ export function App() {
             longitude={destinationMarker?.lng || 0}
             latitude={destinationMarker?.lat || 0}
           >
-            <img
-              src="../assets/pin.png"
-              width="10"
-              hidden={!destinationMarker}
-            />
+            <img src={pinImgURL} width="10" hidden={!destinationMarker} />
           </Marker>
         </Map>
       </div>
