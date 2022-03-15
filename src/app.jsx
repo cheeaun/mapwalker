@@ -235,7 +235,7 @@ export function App() {
           </Marker>
         </Map>
       </div>
-      <div id="actions">
+      <div id="actions" class={loading ? 'disabled' : ''}>
         {loading && <div class="loading" />}
         {!!destinationMarker ? (
           <>

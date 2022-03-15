@@ -120,12 +120,16 @@ button {
   white-space: nowrap;
   text-shadow: 0 1px #fff, 0 3px 5px #fff;
 }
+#actions.disabled button {
+  pointer-events: none;
+  opacity: 0.5;
+}
 
 .loading {
   width: 16px;
   height: 16px;
   display: inline-block;
-  border: 4px solid white;
+  border: 4px solid #333;
   border-radius: 50%;
   border-top-color: transparent;
   animation: spin 0.5s linear infinite;
@@ -142,4 +146,11 @@ button {
 
 .mapboxgl-marker img {
   vertical-align: middle;
+}
+
+.mapboxgl-ctrl-top-left {
+  z-index: 10;
+}
+.mapboxgl-ctrl-geocoder {
+  width: calc(100vw - 20px);
 }
