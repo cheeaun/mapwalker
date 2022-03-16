@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@mapbox/mapbox-gl-geocoder": "mapbox/mapbox-gl-geocoder",
+    "awesome-debounce-promise": "~2.1.0",
     "mapbox-gl": "~2.7.0",
     "preact": "~10.6.6",
     "react-map-gl": "~7.0.10"

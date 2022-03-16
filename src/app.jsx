@@ -9,6 +9,7 @@ import Map, {
   useControl,
 } from 'react-map-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 import { fetchRoutes } from './apis';
 import LS from './ls';
@@ -77,6 +78,15 @@ export function App() {
     },
   };
 
+  const mapHandleClick = (e) => {
+    console.log('map click', e);
+    if (e.originalEvent.detail > 1) return;
+    if (destinationMarker) return;
+    const { lngLat } = e;
+    setDestinationMarker(lngLat);
+  };
+  const mapHandleClickDebounced = AwesomeDebouncePromise(mapHandleClick, 350);
+
   return (
     <>
       <div id="map">
@@ -120,11 +130,7 @@ export function App() {
               });
             }
           }}
-          onClick={(e) => {
-            if (destinationMarker) return;
-            const { lngLat } = e;
-            setDestinationMarker(lngLat);
-          }}
+          onClick={mapHandleClickDebounced}
         >
           <AttributionControl position="top-right" compact />
           <GeocoderControl
