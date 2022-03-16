@@ -156,8 +156,8 @@ export function App() {
               enableHighAccuracy: true,
               timeout: 3000,
             }}
-            trackUserLocation={true}
-            showUserLocation={true}
+            trackUserLocation
+            showUserHeading
             position="top-right"
             onGeolocate={(e) => {
               console.log({ onGeolocate: e });
@@ -174,6 +174,21 @@ export function App() {
                   },
                 ],
               });
+
+              if (window.DeviceOrientationEvent && !orientationGranted) {
+                if (
+                  typeof DeviceOrientationEvent.requestPermission === 'function'
+                ) {
+                  DeviceOrientationEvent.requestPermission()
+                    .then(function (permissionState) {
+                      if (permissionState === 'granted') {
+                        console.log('granted');
+                        orientationGranted = true;
+                      }
+                    })
+                    .catch((e) => {});
+                }
+              }
             }}
           />
           <Source
