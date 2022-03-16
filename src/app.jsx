@@ -123,6 +123,9 @@ export function App() {
   const mapHandleClickDebounced = AwesomeDebouncePromise(mapHandleClick, 350);
   const orientationGranted = useRef(false);
 
+  // For debugging
+  window._map = mapRef;
+
   return (
     <>
       <div id="map">
