@@ -121,6 +121,7 @@ export function App() {
     }
   };
   const mapHandleClickDebounced = AwesomeDebouncePromise(mapHandleClick, 350);
+  const orientationGranted = useRef(false);
 
   return (
     <>
@@ -225,7 +226,10 @@ export function App() {
                 ],
               });
 
-              if (window.DeviceOrientationEvent && !orientationGranted) {
+              if (
+                window.DeviceOrientationEvent &&
+                !orientationGranted.current
+              ) {
                 if (
                   typeof DeviceOrientationEvent.requestPermission === 'function'
                 ) {
@@ -233,7 +237,7 @@ export function App() {
                     .then(function (permissionState) {
                       if (permissionState === 'granted') {
                         console.log('granted');
-                        orientationGranted = true;
+                        orientationGranted.current = true;
                       }
                     })
                     .catch((e) => {});
