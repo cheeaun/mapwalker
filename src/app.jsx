@@ -349,7 +349,7 @@ export function App() {
               }}
               title="Clear route"
             >
-              ❌🔄
+              🗑️
             </button>
           )
         )}
