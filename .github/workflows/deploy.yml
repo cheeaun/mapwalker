@@ -12,6 +12,7 @@ jobs:
       - env:
           VITE_MAPBOX_ACCESS_TOKEN: ${{ secrets.VITE_MAPBOX_ACCESS_TOKEN }}
           VITE_ORS_API_KEY: ${{ secrets.VITE_ORS_API_KEY }}
+          VITE_GRAPHHOPPER_API_KEY: ${{ secrets.VITE_GRAPHHOPPER_API_KEY }}
         run: |
           npm ci
           npm run build

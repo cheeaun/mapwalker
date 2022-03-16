@@ -1,4 +1,7 @@
-const { VITE_ORS_API_KEY: ORS_API_KEY } = import.meta.env;
+const {
+  VITE_ORS_API_KEY: ORS_API_KEY,
+  VITE_GRAPHHOPPER_API_KEY: GRAPHHOPPER_API_KEY,
+} = import.meta.env;
 
 const APIS = {
   OSM_DE: (origin, destination) =>
@@ -40,7 +43,7 @@ export const fetchRoutes = async (origin, destination, params) => {
 
   const fetch3Params = new URLSearchParams({
     vehicle: 'foot',
-    key: 'LijBPDQGfu7Iiq80w3HzwB4RUDJbMbhs6BU0dEnn',
+    key: GRAPHHOPPER_API_KEY,
     instructions: true,
     points_encoded: false,
     point: [...origin].reverse().join(','),
