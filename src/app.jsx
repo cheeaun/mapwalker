@@ -125,6 +125,14 @@ export function App() {
 
   // For debugging
   window._map = mapRef;
+  useEffect(() => {
+    if (window.navigator.standalone) {
+      setTimeout(() => {
+        document.body.classList.add('standalone');
+        mapRef.current.resize();
+      }, 1000);
+    }
+  }, []);
 
   return (
     <>
