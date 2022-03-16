@@ -1,3 +1,5 @@
+const LS_PREFIX = 'mapwalker-';
+
 export default {
   get: (key) => {
     try {
