@@ -23,6 +23,7 @@ body:after {
   -webkit-backdrop-filter: blur(10px) saturate(200%);
   backdrop-filter: blur(10px) saturate(200%);
   pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 *,
@@ -128,7 +129,9 @@ button {
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
   gap: 1px;
   margin-bottom: env(safe-area-inset-bottom);
+  margin-right: env(safe-area-inset-right);
 }
+
 #actions button {
   padding: 0.9em;
   border: 0;
@@ -165,6 +168,18 @@ button {
 #actions.disabled button {
   pointer-events: none;
   opacity: 0.5;
+}
+
+@media (orientation: landscape) {
+  #actions {
+    flex-direction: row;
+  }
+  #actions button:hover:after {
+    top: 0;
+    right: 0;
+    left: auto;
+    transform: translate(0, -120%);
+  }
 }
 
 .loading {
