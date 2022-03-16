@@ -92,20 +92,29 @@ button {
   right: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   align-items: flex-end;
+  background-color: #ddd;
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  gap: 1px;
 }
 #actions button {
-  background-color: #fff;
-  padding: 0.5em 0.75em;
+  padding: 0.9em;
   border: 0;
   margin: 0;
-  border-radius: 1em;
   color: #333;
-  box-shadow: 0 1px 4px #aaa;
   cursor: pointer;
   font-size: 14px;
   position: relative;
+  background-color: #fff;
+}
+#actions button:first-child {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+#actions button:last-child {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 #actions button.faded {
   opacity: 0.5;

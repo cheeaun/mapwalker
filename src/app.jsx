@@ -18,7 +18,6 @@ import pinImgURL from '../assets/pin.png';
 const { VITE_MAPBOX_ACCESS_TOKEN: MAPBOX_ACCESS_TOKEN } = import.meta.env;
 
 const OVERVIEW_ZOOM_BACK = 2;
-const LS_PREFIX = 'mapwalker-';
 
 function GeocoderControl(props) {
   useControl(() => new MapboxGeocoder(props), {
@@ -70,9 +69,16 @@ export function App() {
         'line-cap': 'round',
       },
       paint: {
-        'line-color': '#0e90df',
-        'line-opacity': 0.75,
-        'line-width': ['interpolate', ['linear'], ['zoom'], 15, 4, 18, 12],
+        'line-color': [
+          'case',
+          ['==', ['get', 'provider'], 'ors'],
+          '#95378C',
+          ['==', ['get', 'provider'], 'graphhopper'],
+          '#EB1E4E',
+          '#0E90DF',
+        ],
+        'line-opacity': ['interpolate', ['linear'], ['zoom'], 15, 1, 18, 0.5],
+        'line-width': ['interpolate', ['linear'], ['zoom'], 15, 4, 18, 14],
         'line-dasharray': [0, 2],
       },
     },
