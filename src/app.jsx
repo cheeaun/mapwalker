@@ -26,6 +26,35 @@ function GeocoderControl(props) {
   return null;
 }
 
+class Legend {
+  onAdd() {
+    this._container = document.createElement('div');
+    this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-legend';
+    this._container.innerHTML = `
+      <h2>Map Legend</h2>
+      <dl>
+        <dt><span class="path" /></dt>
+        <dd>Foot/cycling paths</dd>
+        <dt><span class="bridge" /></dt>
+        <dd>Bridges</dd>
+        <dt><span class="stairs" /></dt>
+        <dd>Stairs</dd>
+        <dt><span class="tunnel" /></dt>
+        <dd>Tunnel/underground/under bridge</dd>
+      </dl>
+    `;
+    return this._container;
+  }
+  onRemove() {
+    this._container.remove();
+  }
+}
+function LegendControl(props) {
+  useControl(() => new Legend(), {
+    position: props.position,
+  });
+}
+
 const emptyGeoJSON = {
   type: 'FeatureCollection',
   features: [],
@@ -166,6 +195,7 @@ export function App() {
             collapsed={true}
             position="top-left"
           />
+          <LegendControl position="bottom-left" />
           <NavigationControl visualizePitch={true} position="top-right" />
           <GeolocateControl
             ref={geolocateControlRef}

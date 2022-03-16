@@ -27,6 +27,17 @@ button {
   bottom: 0;
   left: 0;
 }
+#map .mapboxgl-control-container {
+  position: absolute;
+  top: env(safe-area-inset-top);
+  right: env(safe-area-inset-right);
+  bottom: env(safe-area-inset-bottom);
+  left: env(safe-area-inset-left);
+  pointer-events: none;
+}
+#map .mapboxgl-control-container > * {
+  pointer-events: auto;
+}
 
 .mapboxgl-ctrl-group button,
 .mapboxgl-popup-content {
@@ -47,6 +58,7 @@ button {
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
   overflow: hidden;
+  margin-bottom: env(safe-area-inset-bottom);
 }
 /* Safari fix */
 #overview-map canvas {
@@ -97,6 +109,7 @@ button {
   border-radius: 6px;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
   gap: 1px;
+  margin-bottom: env(safe-area-inset-bottom);
 }
 #actions button {
   padding: 0.9em;
@@ -127,7 +140,9 @@ button {
   left: 0;
   transform: translate(-105%, -50%);
   white-space: nowrap;
-  text-shadow: 0 1px #fff, 0 3px 5px #fff;
+  background-color: #fff;
+  padding: 0.5em;
+  border-radius: 6px;
 }
 #actions.disabled button {
   pointer-events: none;
@@ -162,4 +177,53 @@ button {
 }
 .mapboxgl-ctrl-geocoder {
   width: calc(100vw - 20px);
+}
+
+.mapboxgl-ctrl-legend {
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  max-width: 240px;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.mapboxgl-ctrl-legend h2 {
+  font-size: 1em;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+}
+.mapboxgl-ctrl-legend dl,
+.mapboxgl-ctrl-legend dt,
+.mapboxgl-ctrl-legend dd {
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+.mapboxgl-ctrl-legend dl {
+  /* grid 2 columns */
+  display: grid;
+  grid-template-columns: 16px 1fr;
+}
+.mapboxgl-ctrl-legend dt span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 2px solid;
+}
+.mapboxgl-ctrl-legend dt span.path {
+  border-style: dashed;
+  border-color: #477000;
+}
+.mapboxgl-ctrl-legend dt span.stairs {
+  border-style: dotted;
+  border-color: #ff0000;
+}
+.mapboxgl-ctrl-legend dt span.tunnel {
+  border-style: dashed;
+  border-color: #ff6600;
+}
+.mapboxgl-ctrl-legend dt span.bridge {
+  border-style: dashed;
+  border-color: #5f0fff;
 }
