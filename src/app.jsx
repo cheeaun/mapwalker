@@ -86,7 +86,7 @@ export function App() {
 
   const clickFired = useRef(false);
   const mapHandleClick = (e) => {
-    if (clickFired.current) {
+    if (clickFired.current && !markerPinned) {
       const { lngLat } = e;
       setDestinationMarker(lngLat);
     }
@@ -139,7 +139,6 @@ export function App() {
           onClick={(e) => {
             console.log('map click', e);
             if (e.originalEvent.detail > 1) return;
-            if (destinationMarker) return;
             clickFired.current = true;
             mapHandleClickDebounced(e);
           }}
