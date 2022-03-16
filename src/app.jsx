@@ -84,12 +84,12 @@ export function App() {
     },
   };
 
+  const clickFired = useRef(false);
   const mapHandleClick = (e) => {
-    console.log('map click', e);
-    if (e.originalEvent.detail > 1) return;
-    if (destinationMarker) return;
-    const { lngLat } = e;
-    setDestinationMarker(lngLat);
+    if (clickFired.current) {
+      const { lngLat } = e;
+      setDestinationMarker(lngLat);
+    }
   };
   const mapHandleClickDebounced = AwesomeDebouncePromise(mapHandleClick, 350);
 
@@ -136,7 +136,28 @@ export function App() {
               });
             }
           }}
-          onClick={mapHandleClickDebounced}
+          onClick={(e) => {
+            console.log('map click', e);
+            if (e.originalEvent.detail > 1) return;
+            if (destinationMarker) return;
+            clickFired.current = true;
+            mapHandleClickDebounced(e);
+          }}
+          onDblClick={(e) => {
+            if (clickFired.current) {
+              clickFired.current = false;
+            }
+          }}
+          onZoomStart={(e) => {
+            if (clickFired.current) {
+              clickFired.current = false;
+            }
+          }}
+          onDragStart={(e) => {
+            if (clickFired.current) {
+              clickFired.current = false;
+            }
+          }}
         >
           <AttributionControl position="top-right" compact />
           <GeocoderControl
