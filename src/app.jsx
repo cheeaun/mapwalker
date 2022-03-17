@@ -30,7 +30,7 @@ function GeocoderControl(props) {
 }
 
 class Legend {
-  onAdd() {
+  onAdd(map) {
     this._container = document.createElement('div');
     this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-legend';
     this._container.innerHTML = `
@@ -46,6 +46,11 @@ class Legend {
         <dd>Tunnel/underground/under bridge</dd>
       </dl>
     `;
+    map.on('zoomend', (e) => {
+      const { zoom } = e.viewState;
+      const lowZoomLevel = zoom < 16;
+      this._container.hidden = !lowZoomLevel;
+    });
     return this._container;
   }
   onRemove() {
