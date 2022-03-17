@@ -44,6 +44,12 @@ class Legend {
         <dd>Stairs</dd>
         <dt><span class="tunnel" /></dt>
         <dd>Tunnel/underground/under bridge</dd>
+        <dt><img src="${walkDotBlueImgURL}" width="10" height="10" /></dt>
+        <dd>Route from OSM</dd>
+        <dt><img src="${walkDotPurpleImgURL}" width="10" height="10" /></dt>
+        <dd>Route from ORS</dd>
+        <dt><img src="${walkDotRedImgURL}" width="10" height="10" /></dt>
+        <dd>Route from GraphHopper</dd>
       </dl>
     `;
     map.on('zoomend', (e) => {
