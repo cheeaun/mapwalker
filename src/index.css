@@ -236,7 +236,7 @@ button {
 }
 .mapboxgl-ctrl-legend dt span.tunnel {
   border-style: dashed;
-  border-color: #ff6600;
+  border-color: #cc00cc;
 }
 .mapboxgl-ctrl-legend dt span.bridge {
   border-style: dashed;

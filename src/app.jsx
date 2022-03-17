@@ -15,7 +15,7 @@ import { fetchRoutes } from './apis';
 import LS from './ls';
 import pinImgURL from '../assets/pin.png';
 
-const { VITE_MAPBOX_ACCESS_TOKEN: MAPBOX_ACCESS_TOKEN } = import.meta.env;
+const { VITE_MAPBOX_ACCESS_TOKEN: MAPBOX_ACCESS_TOKEN, DEV } = import.meta.env;
 
 const OVERVIEW_ZOOM_BACK = 2;
 
@@ -129,7 +129,9 @@ export function App() {
         <Map
           ref={mapRef}
           mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
-          mapStyle="mapbox://styles/cheeaun/cl0ds1jbz003014px6nthvdle/draft"
+          mapStyle={`mapbox://styles/cheeaun/cl0ds1jbz003014px6nthvdle${
+            DEV ? '/draft' : ''
+          }`}
           initialViewState={
             LS.get('view-state') || {
               center: [103.8198, 1.3521],
