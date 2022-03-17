@@ -413,6 +413,10 @@ export function App() {
                   geolocationGeoJSON,
                   destinationMarker,
                 });
+                if (!geolocationGeoJSON) {
+                  alert('Please allow location access to generate routes');
+                  return;
+                }
                 const results = await fetchRoutes(
                   geolocationGeoJSON.features[0].geometry.coordinates,
                   [destinationMarker.lng, destinationMarker.lat],
@@ -421,7 +425,7 @@ export function App() {
                 setLoading(false);
                 setMarkerPinned(true);
               }}
-              title="Generate route to marker"
+              title="Generate routes to marker"
             >
               🔃
             </button>
