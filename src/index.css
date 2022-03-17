@@ -18,6 +18,8 @@ button {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 #map {
