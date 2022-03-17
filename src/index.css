@@ -116,6 +116,11 @@ button {
   margin-right: env(safe-area-inset-right);
 }
 
+#actions .loading {
+  position: absolute;
+  top: -24px;
+}
+
 #actions button {
   padding: 0.9em;
   border: 0;
