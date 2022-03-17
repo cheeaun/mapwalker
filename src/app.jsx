@@ -14,6 +14,9 @@ import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import { fetchRoutes } from './apis';
 import LS from './ls';
 import pinImgURL from '../assets/pin.png';
+import walkDotBlueImgURL from '../assets/walk-dot-blue.png';
+import walkDotPurpleImgURL from '../assets/walk-dot-purple.png';
+import walkDotRedImgURL from '../assets/walk-dot-red.png';
 
 const { VITE_MAPBOX_ACCESS_TOKEN: MAPBOX_ACCESS_TOKEN, DEV } = import.meta.env;
 
@@ -111,6 +114,24 @@ export function App() {
         'line-dasharray': [0, 2],
       },
     },
+    walkRoute2: {
+      layout: {
+        'symbol-placement': 'line',
+        'symbol-spacing': 1,
+        // 'icon-allow-overlap': true,
+        'icon-ignore-placement': true,
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 15, 0.5, 18, 0.75],
+        'icon-padding': 0,
+        'icon-image': [
+          'case',
+          ['==', ['get', 'provider'], 'ors'],
+          'walk-dot-purple',
+          ['==', ['get', 'provider'], 'graphhopper'],
+          'walk-dot-red',
+          'walk-dot-blue',
+        ],
+      },
+    },
   };
 
   const clickFired = useRef(false);
@@ -144,6 +165,22 @@ export function App() {
           logoPosition="top-right"
           onLoad={(e) => {
             geolocateControlRef.current?.trigger();
+
+            mapRef.current.loadImage(walkDotBlueImgURL, (error, image) => {
+              if (error) return;
+              mapRef.current.addImage('walk-dot-blue', image);
+              overviewMapRef.current.addImage('walk-dot-blue', image);
+            });
+            mapRef.current.loadImage(walkDotPurpleImgURL, (error, image) => {
+              if (error) return;
+              mapRef.current.addImage('walk-dot-purple', image);
+              overviewMapRef.current.addImage('walk-dot-purple', image);
+            });
+            mapRef.current.loadImage(walkDotRedImgURL, (error, image) => {
+              if (error) return;
+              mapRef.current.addImage('walk-dot-red', image);
+              overviewMapRef.current.addImage('walk-dot-red', image);
+            });
           }}
           onMoveStart={(e) => {
             if (e.geolocateSource) return;
@@ -252,7 +289,8 @@ export function App() {
             type="geojson"
             data={walkRouteGeoJSON || emptyGeoJSON}
           >
-            <Layer id="walk-route" type="line" {...mapStyles.walkRoute} />
+            {/* <Layer id="walk-route" type="line" {...mapStyles.walkRoute} /> */}
+            <Layer id="walk-route" type="symbol" {...mapStyles.walkRoute2} />
           </Source>
           <Marker
             anchor="bottom"
@@ -287,15 +325,17 @@ export function App() {
             type="geojson"
             data={walkRouteGeoJSON || emptyGeoJSON}
           >
-            <Layer id="walk-route" type="line" {...mapStyles.walkRoute} />
+            {/* <Layer id="walk-route" type="line" {...mapStyles.walkRoute} /> */}
+            <Layer id="walk-route" type="symbol" {...mapStyles.walkRoute2} />
           </Source>
           <Source id="geolocation" type="geojson" data={geolocationGeoJSON}>
             <Layer
               id="geolocation-outer"
               type="circle"
               paint={{
-                'circle-radius': 5,
+                'circle-radius': 12,
                 'circle-color': '#1ea1f1',
+                'circle-opacity': 0.3,
               }}
             />
             <Layer
@@ -304,7 +344,7 @@ export function App() {
               paint={{
                 'circle-radius': 3,
                 'circle-color': '#1ea1f1',
-                'circle-stroke-width': 1,
+                'circle-stroke-width': 2,
                 'circle-stroke-color': '#fff',
               }}
             />
