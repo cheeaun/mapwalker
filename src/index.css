@@ -201,6 +201,9 @@ button {
   width: calc(100vw - 20px);
 }
 
+.mapboxgl-ctrl-bottom-left {
+  pointer-events: none !important;
+}
 .mapboxgl-ctrl-legend {
   padding: 10px;
   background-color: rgba(255, 255, 255, 0.5);
@@ -208,6 +211,8 @@ button {
   max-width: 240px;
   border-top: 1px solid #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px #fff;
+  pointer-events: none;
 }
 .mapboxgl-ctrl-legend h2 {
   font-size: 1em;
