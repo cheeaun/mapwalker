@@ -74,6 +74,7 @@ export const fetchRoutes = async (origin, destination, params) => {
         properties: {
           index: 0,
           provider: 'osm-de',
+          distance: response1?.routes[0]?.distance,
         },
       },
       {
@@ -82,6 +83,7 @@ export const fetchRoutes = async (origin, destination, params) => {
         properties: {
           index: 1,
           provider: 'ors',
+          distance: response2?.features[0]?.properties?.summary?.distance,
         },
       },
       {
@@ -90,6 +92,7 @@ export const fetchRoutes = async (origin, destination, params) => {
         properties: {
           index: 2,
           provider: 'graphhopper',
+          distance: response3?.paths[0]?.distance,
         },
       },
     ],
