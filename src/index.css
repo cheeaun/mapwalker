@@ -233,9 +233,11 @@ button {
   border-radius: 6px;
   appearance: none;
   cursor: pointer;
-  display: flex;
+  text-align: left;
   align-items: center;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: 1.5em 1fr;
+  gap: 0.5em;
 }
 .marker-sheet-container button:hover {
   background-color: #ddd;
