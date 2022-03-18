@@ -294,6 +294,9 @@ export function App() {
                 }
               }
             }}
+            onError={(e) => {
+              alert(`${e.code}: ${e.message}`);
+            }}
           />
           <Source
             id="walk-route"
