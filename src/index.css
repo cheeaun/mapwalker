@@ -167,7 +167,7 @@ button {
 }
 
 .bottom-sheet-container {
-  padding: 0 1em 1em;
+  padding: 0.5em 1em 1em;
   margin-bottom: env(safe-area-inset-bottom);
   margin-right: env(safe-area-inset-right);
   margin-left: env(safe-area-inset-left);
