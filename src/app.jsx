@@ -132,7 +132,7 @@ export function App() {
         // 'icon-allow-overlap': true,
         // 'icon-ignore-placement': true,
         'icon-padding': 0,
-        'icon-size': ['interpolate', ['linear'], ['zoom'], 15, 0.5, 18, 0.75],
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 10, 0.5, 18, 0.75],
         'icon-image': [
           'case',
           ['==', ['get', 'provider'], 'ors'],
