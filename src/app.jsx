@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'preact/hooks';
+import { useRef, useState, useEffect, useMemo } from 'preact/hooks';
 import Map, {
   AttributionControl,
   GeolocateControl,
@@ -11,6 +11,8 @@ import Map, {
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import { BottomSheet } from 'react-spring-bottom-sheet';
+import prettyMetric from 'pretty-metric';
+import humanizeDuration from 'humanize-duration';
 
 import { fetchRoutes } from './apis';
 import LS from './ls';
@@ -75,6 +77,18 @@ const mapStyles = {
   },
 };
 
+function routeInfoText(distance) {
+  // Walking speed: 1.33m per second
+  const timeDurationSecs = (distance / 1.33) * 1000;
+  return `${prettyMetric(distance).humanize()} (${humanizeDuration(
+    timeDurationSecs,
+    {
+      units: ['h', 'm'],
+      round: true,
+    },
+  )})`;
+}
+
 export function App() {
   const mapRef = useRef();
   const overviewMapDivRef = useRef();
@@ -121,6 +135,15 @@ export function App() {
   const [markerSheetOpen, setMarkerSheetOpen] = useState(false);
   const backupDestinationMarker = useRef(destinationMarker);
   const backupWalkRouteGeoJSON = useRef(walkRouteGeoJSON);
+
+  const distances = useMemo(() => {
+    const info = {};
+    walkRouteGeoJSON?.features?.forEach((feature) => {
+      const { provider, distance } = feature.properties;
+      info[provider] = distance;
+    });
+    return info;
+  }, [backupWalkRouteGeoJSON]);
 
   return (
     <>
@@ -423,15 +446,26 @@ export function App() {
             <dt>
               <img src={walkDotBlueImgURL} width="10" height="10" />
             </dt>
-            <dd>Route from OpenStreetMap</dd>
+            <dd>
+              Route from OpenStreetMap
+              {distances['osm-de'] &&
+                ` - ${routeInfoText(distances['osm-de'])}`}
+            </dd>
             <dt>
               <img src={walkDotPurpleImgURL} width="10" height="10" />
             </dt>
-            <dd>Route from OpenRouteService</dd>
+            <dd>
+              Route from OpenRouteService
+              {distances.ors && ` - ${routeInfoText(distances.ors)}`}
+            </dd>
             <dt>
               <img src={walkDotRedImgURL} width="10" height="10" />
             </dt>
-            <dd>Route from GraphHopper</dd>
+            <dd>
+              Route from GraphHopper
+              {distances.graphhopper &&
+                ` - ${routeInfoText(distances.graphhopper)}`}
+            </dd>
           </dl>
         </div>
       </BottomSheet>
