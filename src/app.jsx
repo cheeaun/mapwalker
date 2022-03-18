@@ -9,7 +9,6 @@ import Map, {
   useControl,
 } from 'react-map-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 import { fetchRoutes } from './apis';
 import LS from './ls';
@@ -128,11 +127,10 @@ export function App() {
     walkRoute2: {
       layout: {
         'symbol-placement': 'line',
-        'symbol-spacing': 1,
+        'symbol-spacing': ['interpolate', ['linear'], ['zoom'], 15, 1, 18, 24],
         // 'icon-allow-overlap': true,
         'icon-ignore-placement': true,
         'icon-size': ['interpolate', ['linear'], ['zoom'], 15, 0.5, 18, 0.75],
-        'icon-padding': 0,
         'icon-image': [
           'case',
           ['==', ['get', 'provider'], 'ors'],
@@ -202,6 +200,10 @@ export function App() {
             if (e.geolocateSource) return;
             if (overviewMapDivRef.current.hidden) return;
             overviewMapDivRef.current.classList.remove('faded');
+          }}
+          onIdle={(e) => {
+            if (overviewMapDivRef.current.hidden) return;
+            overviewMapDivRef.current.classList.remove('faded');
             LS.set('view-state', e.viewState);
           }}
           onMove={(e) => {
@@ -231,6 +233,10 @@ export function App() {
             if (clickFired.current) {
               clickFired.current = false;
             }
+          }}
+          onZoomEnd={(e) => {
+            const { zoom } = e.viewState;
+            console.log('zoom', zoom);
           }}
           onDragStart={(e) => {
             if (clickFired.current) {
