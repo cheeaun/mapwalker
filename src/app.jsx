@@ -486,6 +486,21 @@ export function App() {
             </>
           ) : (
             <>
+              {!destinationMarker && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const center = mapRef.current?.getCenter();
+                    setDestinationMarker({
+                      lat: center.lat,
+                      lng: center.lng,
+                    });
+                    setMarkerSheetOpen(false);
+                  }}
+                >
+                  <span>📌</span> Place marker on map
+                </button>
+              )}
               {!destinationMarker && backupDestinationMarker.current && (
                 <button
                   type="button"
@@ -507,14 +522,16 @@ export function App() {
                   🗑️ Clear route
                 </button>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setWalkRouteGeoJSON(backupWalkRouteGeoJSON.current);
-                  }}
-                >
-                  <span>♻️</span> Restore route
-                </button>
+                backupWalkRouteGeoJSON.current && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setWalkRouteGeoJSON(backupWalkRouteGeoJSON.current);
+                    }}
+                  >
+                    <span>♻️</span> Restore route
+                  </button>
+                )
               )}
             </>
           )}
