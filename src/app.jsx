@@ -130,7 +130,8 @@ export function App() {
         'symbol-placement': 'line',
         'symbol-spacing': ['interpolate', ['linear'], ['zoom'], 15, 1, 18, 24],
         // 'icon-allow-overlap': true,
-        'icon-ignore-placement': true,
+        // 'icon-ignore-placement': true,
+        'icon-padding': 0,
         'icon-size': ['interpolate', ['linear'], ['zoom'], 15, 0.5, 18, 0.75],
         'icon-image': [
           'case',
@@ -154,6 +155,8 @@ export function App() {
   const mapHandleClickDebounced = AwesomeDebouncePromise(mapHandleClick, 350);
   const orientationGranted = useRef(false);
 
+  const [mapTextLayerID, setMapTextLayerID] = useState(null);
+
   return (
     <>
       <div id="map">
@@ -175,6 +178,12 @@ export function App() {
           logoPosition="top-right"
           onLoad={(e) => {
             geolocateControlRef.current?.trigger();
+
+            setMapTextLayerID(
+              mapRef.current
+                .getStyle()
+                .layers.find((layer) => layer?.layout?.['text-field'])?.id,
+            );
 
             mapRef.current.loadImage(walkDotBlueImgURL, (error, image) => {
               if (error) return;
@@ -358,6 +367,7 @@ export function App() {
                 'circle-color': '#1ea1f1',
                 'circle-opacity': 0.3,
               }}
+              beforeId={mapTextLayerID}
             />
             <Layer
               id="geolocation-inner"
