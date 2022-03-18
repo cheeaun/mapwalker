@@ -144,10 +144,12 @@ export function App() {
           onLoad={(e) => {
             geolocateControlRef.current?.trigger();
 
+            const { layers } = mapRef.current.getStyle();
             setMapTextLayerID(
-              mapRef.current
-                .getStyle()
-                .layers.find((layer) => layer?.layout?.['text-field'])?.id,
+              layers.find(
+                (layer) =>
+                  layer.type === 'symbol' && layer?.layout?.['text-field'],
+              )?.id,
             );
 
             mapRef.current.loadImage(walkDotBlueImgURL, (error, image) => {
@@ -284,7 +286,12 @@ export function App() {
             data={walkRouteGeoJSON || emptyGeoJSON}
           >
             {/* <Layer id="walk-route" type="line" {...mapStyles.walkRoute} /> */}
-            <Layer id="walk-route" type="symbol" {...mapStyles.walkRoute2} />
+            <Layer
+              id="walk-route"
+              type="symbol"
+              {...mapStyles.walkRoute2}
+              beforeId={mapTextLayerID}
+            />
           </Source>
           <Marker
             anchor="bottom"
@@ -324,7 +331,12 @@ export function App() {
             data={walkRouteGeoJSON || emptyGeoJSON}
           >
             {/* <Layer id="walk-route" type="line" {...mapStyles.walkRoute} /> */}
-            <Layer id="walk-route" type="symbol" {...mapStyles.walkRoute2} />
+            <Layer
+              id="walk-route"
+              type="symbol"
+              {...mapStyles.walkRoute2}
+              beforeId={mapTextLayerID}
+            />
           </Source>
           <Source id="geolocation" type="geojson" data={geolocationGeoJSON}>
             <Layer
