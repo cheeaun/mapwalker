@@ -81,23 +81,6 @@ button {
 #overview-map .mapboxgl-control-container {
   display: none;
 }
-:root {
-  --overview-map-box-width: 100px;
-  --overview-map-box-height: 100px;
-}
-/* #overview-map:after {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  content: '';
-  display: block;
-  width: var(--overview-map-box-width);
-  height: var(--overview-map-box-height);
-  border: 2px ridge rgba(255, 255, 255, 0.5);
-  border-radius: 2px;
-  mix-blend-mode: difference;
-} */
 
 #actions {
   position: fixed;
@@ -157,18 +140,6 @@ button {
   opacity: 0.5;
 }
 
-@media (orientation: landscape) {
-  #actions {
-    flex-direction: row;
-  }
-  #actions button:hover:after {
-    top: 0;
-    right: 0;
-    left: auto;
-    transform: translate(0, -120%);
-  }
-}
-
 .loading {
   width: 16px;
   height: 16px;
@@ -199,56 +170,80 @@ button {
   width: calc(100vw - 20px);
 }
 
-.mapboxgl-ctrl-bottom-left {
-  pointer-events: none !important;
+.bottom-sheet-container {
+  padding: 0 1em 1em;
+  margin-bottom: env(safe-area-inset-bottom);
+  margin-right: env(safe-area-inset-right);
+  margin-left: env(safe-area-inset-left);
 }
-.mapboxgl-ctrl-legend {
-  padding: 10px;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 12px;
-  max-width: 240px;
-  border-top: 1px solid #fff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  text-shadow: 0 1px #fff;
-  pointer-events: none;
+
+.legend-sheet-container h2 {
+  margin-top: 0;
+  padding-top: 0;
 }
-.mapboxgl-ctrl-legend h2 {
-  font-size: 1em;
-  margin: 0;
-  padding: 0;
-  text-transform: uppercase;
-}
-.mapboxgl-ctrl-legend dl,
-.mapboxgl-ctrl-legend dt,
-.mapboxgl-ctrl-legend dd {
-  margin: 0;
+.legend-sheet-container dl,
+.legend-sheet-container dt,
+.legend-sheet-container dd {
+  margin: 0 0 0.5em;
   padding: 0;
   vertical-align: middle;
 }
-.mapboxgl-ctrl-legend dl {
-  /* grid 2 columns */
+.legend-sheet-container dl {
   display: grid;
   grid-template-columns: 16px 1fr;
 }
-.mapboxgl-ctrl-legend dt span {
+.legend-sheet-container dt span {
   display: inline-block;
   width: 10px;
   height: 10px;
   border: 2px solid;
 }
-.mapboxgl-ctrl-legend dt span.path {
+.legend-sheet-container dt span.path {
   border-style: dashed;
   border-color: #477000;
 }
-.mapboxgl-ctrl-legend dt span.stairs {
+.legend-sheet-container dt span.stairs {
   border-style: dotted;
   border-color: #ff0000;
 }
-.mapboxgl-ctrl-legend dt span.tunnel {
+.legend-sheet-container dt span.tunnel {
   border-style: dashed;
   border-color: #cc00cc;
 }
-.mapboxgl-ctrl-legend dt span.bridge {
+.legend-sheet-container dt span.bridge {
   border-style: dashed;
   border-color: #5f0fff;
+}
+
+:root {
+  --rsbs-backdrop-bg: rgba(0, 0, 0, 0.15);
+}
+[data-rsbs-header] {
+  box-shadow: none;
+}
+
+.marker-sheet-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+.marker-sheet-container button {
+  flex: 1;
+  padding: 1em;
+  border: 0;
+  margin: 0;
+  color: #333;
+  background-color: #eee;
+  border-radius: 6px;
+  appearance: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.marker-sheet-container button:hover {
+  background-color: #ddd;
+}
+.marker-sheet-container button.faded span {
+  opacity: 0.5;
 }

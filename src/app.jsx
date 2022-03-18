@@ -10,6 +10,7 @@ import Map, {
 } from 'react-map-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
+import { BottomSheet } from 'react-spring-bottom-sheet';
 
 import { fetchRoutes } from './apis';
 import LS from './ls';
@@ -29,49 +30,49 @@ function GeocoderControl(props) {
   return null;
 }
 
-class Legend {
-  onAdd(map) {
-    this._container = document.createElement('div');
-    this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-legend';
-    this._container.innerHTML = `
-      <h2>Map Legend</h2>
-      <dl>
-        <dt><span class="path" /></dt>
-        <dd>Foot/cycling paths</dd>
-        <dt><span class="bridge" /></dt>
-        <dd>Bridges</dd>
-        <dt><span class="stairs" /></dt>
-        <dd>Stairs</dd>
-        <dt><span class="tunnel" /></dt>
-        <dd>Tunnel/underground/under bridge</dd>
-        <dt><img src="${walkDotBlueImgURL}" width="10" height="10" /></dt>
-        <dd>Route from OSM</dd>
-        <dt><img src="${walkDotPurpleImgURL}" width="10" height="10" /></dt>
-        <dd>Route from ORS</dd>
-        <dt><img src="${walkDotRedImgURL}" width="10" height="10" /></dt>
-        <dd>Route from GraphHopper</dd>
-      </dl>
-    `;
-    map.on('zoomend', (e) => {
-      const { zoom } = e.viewState;
-      const lowZoomLevel = zoom < 16;
-      this._container.hidden = !lowZoomLevel;
-    });
-    return this._container;
-  }
-  onRemove() {
-    this._container.remove();
-  }
-}
-function LegendControl(props) {
-  useControl(() => new Legend(), {
-    position: props.position,
-  });
-}
-
 const emptyGeoJSON = {
   type: 'FeatureCollection',
   features: [],
+};
+
+const mapStyles = {
+  walkRoute: {
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+    },
+    paint: {
+      'line-color': [
+        'case',
+        ['==', ['get', 'provider'], 'ors'],
+        '#95378C',
+        ['==', ['get', 'provider'], 'graphhopper'],
+        '#EB1E4E',
+        '#0E90DF',
+      ],
+      'line-opacity': ['interpolate', ['linear'], ['zoom'], 15, 1, 18, 0.5],
+      'line-width': ['interpolate', ['linear'], ['zoom'], 15, 4, 18, 14],
+      'line-dasharray': [0, 2],
+    },
+  },
+  walkRoute2: {
+    layout: {
+      'symbol-placement': 'line',
+      'symbol-spacing': ['interpolate', ['linear'], ['zoom'], 15, 1, 18, 24],
+      // 'icon-allow-overlap': true,
+      // 'icon-ignore-placement': true,
+      'icon-padding': 0,
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 10, 0.5, 18, 0.75],
+      'icon-image': [
+        'case',
+        ['==', ['get', 'provider'], 'ors'],
+        'walk-dot-purple',
+        ['==', ['get', 'provider'], 'graphhopper'],
+        'walk-dot-red',
+        'walk-dot-blue',
+      ],
+    },
+  },
 };
 
 export function App() {
@@ -105,46 +106,6 @@ export function App() {
     LS.set('marker-pinned', markerPinned);
   }, [markerPinned]);
 
-  const mapStyles = {
-    walkRoute: {
-      layout: {
-        'line-join': 'round',
-        'line-cap': 'round',
-      },
-      paint: {
-        'line-color': [
-          'case',
-          ['==', ['get', 'provider'], 'ors'],
-          '#95378C',
-          ['==', ['get', 'provider'], 'graphhopper'],
-          '#EB1E4E',
-          '#0E90DF',
-        ],
-        'line-opacity': ['interpolate', ['linear'], ['zoom'], 15, 1, 18, 0.5],
-        'line-width': ['interpolate', ['linear'], ['zoom'], 15, 4, 18, 14],
-        'line-dasharray': [0, 2],
-      },
-    },
-    walkRoute2: {
-      layout: {
-        'symbol-placement': 'line',
-        'symbol-spacing': ['interpolate', ['linear'], ['zoom'], 15, 1, 18, 24],
-        // 'icon-allow-overlap': true,
-        // 'icon-ignore-placement': true,
-        'icon-padding': 0,
-        'icon-size': ['interpolate', ['linear'], ['zoom'], 10, 0.5, 18, 0.75],
-        'icon-image': [
-          'case',
-          ['==', ['get', 'provider'], 'ors'],
-          'walk-dot-purple',
-          ['==', ['get', 'provider'], 'graphhopper'],
-          'walk-dot-red',
-          'walk-dot-blue',
-        ],
-      },
-    },
-  };
-
   const clickFired = useRef(false);
   const mapHandleClick = (e) => {
     if (clickFired.current && !markerPinned) {
@@ -156,6 +117,10 @@ export function App() {
   const orientationGranted = useRef(false);
 
   const [mapTextLayerID, setMapTextLayerID] = useState(null);
+  const [legendSheetOpen, setLegendSheetOpen] = useState(false);
+  const [markerSheetOpen, setMarkerSheetOpen] = useState(false);
+  const backupDestinationMarker = useRef(destinationMarker);
+  const backupWalkRouteGeoJSON = useRef(walkRouteGeoJSON);
 
   return (
     <>
@@ -262,7 +227,6 @@ export function App() {
             collapsed={true}
             position="top-left"
           />
-          <LegendControl position="bottom-left" />
           <NavigationControl visualizePitch={true} position="top-right" />
           <GeolocateControl
             ref={geolocateControlRef}
@@ -389,81 +353,173 @@ export function App() {
           </Marker>
         </Map>
       </div>
-      <div id="actions" class={loading ? 'disabled' : ''}>
+      <div id="actions">
         {loading && <div class="loading" />}
-        {!!destinationMarker ? (
-          <>
-            <button
-              type="button"
-              onClick={() => {
-                setDestinationMarker(null);
-                setMarkerPinned(false);
-              }}
-              title="Remove marker"
-            >
-              ❌
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMarkerPinned(!markerPinned);
-              }}
-              class={markerPinned ? '' : 'faded'}
-              title={markerPinned ? 'Unpin marker' : 'Pin marker'}
-            >
-              📌
-            </button>
-            {/* Find marker button */}
-            <button
-              type="button"
-              onClick={() => {
-                mapRef.current?.flyTo({
-                  center: destinationMarker,
-                });
-              }}
-              title="Fly to marker"
-            >
-              🔍
-            </button>
-            <button
-              type="button"
-              onClick={async () => {
-                setLoading(true);
-                console.log({
-                  geolocationGeoJSON,
-                  destinationMarker,
-                });
-                if (!geolocationGeoJSON) {
-                  alert('Please allow location access to generate routes');
-                  return;
-                }
-                const results = await fetchRoutes(
-                  geolocationGeoJSON.features[0].geometry.coordinates,
-                  [destinationMarker.lng, destinationMarker.lat],
-                );
-                setWalkRouteGeoJSON(results);
-                setLoading(false);
-                setMarkerPinned(true);
-              }}
-              title="Generate routes to marker"
-            >
-              🔃
-            </button>
-          </>
-        ) : (
-          !!walkRouteGeoJSON && (
-            <button
-              type="button"
-              onClick={() => {
-                setWalkRouteGeoJSON(null);
-              }}
-              title="Clear route"
-            >
-              🗑️
-            </button>
-          )
-        )}
+        <button
+          type="button"
+          onClick={() => {
+            setLegendSheetOpen(true);
+          }}
+          title="Legend"
+        >
+          <svg height="24" viewBox="0 0 24 24" width="24">
+            <path d="m11 7h2v2h-2zm0 4h2v6h-2zm1-9c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setMarkerSheetOpen(true);
+          }}
+          title="Actions"
+          disabled={loading}
+        >
+          <svg height="24" viewBox="0 0 24 24" width="24">
+            <path d="m3 3v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4zm4-16v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4z" />
+          </svg>
+        </button>
       </div>
+      <BottomSheet
+        open={legendSheetOpen}
+        onDismiss={() => {
+          setLegendSheetOpen(false);
+        }}
+      >
+        <div class="bottom-sheet-container legend-sheet-container">
+          <h2>Map Legend</h2>
+          <dl>
+            <dt>
+              <span class="path" />
+            </dt>
+            <dd>Foot paths, cycling paths</dd>
+            <dt>
+              <span class="bridge" />
+            </dt>
+            <dd>Bridges</dd>
+            <dt>
+              <span class="stairs" />
+            </dt>
+            <dd>Stairs</dd>
+            <dt>
+              <span class="tunnel" />
+            </dt>
+            <dd>Tunnels, underground paths, under bridge</dd>
+            <dt>
+              <img src={walkDotBlueImgURL} width="10" height="10" />
+            </dt>
+            <dd>Route from OpenStreetMap</dd>
+            <dt>
+              <img src={walkDotPurpleImgURL} width="10" height="10" />
+            </dt>
+            <dd>Route from OpenRouteService</dd>
+            <dt>
+              <img src={walkDotRedImgURL} width="10" height="10" />
+            </dt>
+            <dd>Route from GraphHopper</dd>
+          </dl>
+        </div>
+      </BottomSheet>
+      <BottomSheet
+        open={markerSheetOpen}
+        onDismiss={() => {
+          setMarkerSheetOpen(false);
+        }}
+      >
+        <div class="bottom-sheet-container marker-sheet-container">
+          {!!destinationMarker ? (
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  setDestinationMarker(null);
+                  backupDestinationMarker.current = destinationMarker;
+                  setMarkerPinned(false);
+                }}
+              >
+                <span>❌</span> Remove marker
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMarkerPinned(!markerPinned);
+                  setMarkerSheetOpen(false);
+                }}
+                class={markerPinned ? '' : 'faded'}
+              >
+                <span>📌</span> {markerPinned ? 'Unpin marker' : 'Pin marker'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  mapRef.current?.flyTo({
+                    center: destinationMarker,
+                  });
+                  setMarkerSheetOpen(false);
+                }}
+              >
+                <span>🔍</span> Fly to marker
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  setLoading(true);
+                  setMarkerSheetOpen(false);
+                  console.log({
+                    geolocationGeoJSON,
+                    destinationMarker,
+                  });
+                  if (!geolocationGeoJSON) {
+                    alert('Please allow location access to generate routes');
+                    return;
+                  }
+                  const results = await fetchRoutes(
+                    geolocationGeoJSON.features[0].geometry.coordinates,
+                    [destinationMarker.lng, destinationMarker.lat],
+                  );
+                  setWalkRouteGeoJSON(results);
+                  setLoading(false);
+                  setMarkerPinned(true);
+                }}
+              >
+                <span>🔃</span> Generate walk routes to marker
+              </button>
+            </>
+          ) : (
+            <>
+              {!destinationMarker && backupDestinationMarker.current && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDestinationMarker(backupDestinationMarker.current);
+                  }}
+                >
+                  <span>♻️</span> Restore marker
+                </button>
+              )}
+              {!!walkRouteGeoJSON ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    backupWalkRouteGeoJSON.current = walkRouteGeoJSON;
+                    setWalkRouteGeoJSON(null);
+                  }}
+                >
+                  🗑️ Clear route
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setWalkRouteGeoJSON(backupWalkRouteGeoJSON.current);
+                  }}
+                >
+                  <span>♻️</span> Restore route
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      </BottomSheet>
     </>
   );
 }
