@@ -295,6 +295,10 @@ export function App() {
               const { lngLat } = e;
               setDestinationMarker(lngLat);
             }}
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+              setMarkerSheetOpen(true);
+            }}
           >
             <img src={pinImgURL} width="18" hidden={!destinationMarker} />
           </Marker>
