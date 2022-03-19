@@ -21,6 +21,7 @@ import pinImgURL from '../assets/pin.png';
 import walkDotBlueImgURL from '../assets/walk-dot-blue.png';
 import walkDotPurpleImgURL from '../assets/walk-dot-purple.png';
 import walkDotRedImgURL from '../assets/walk-dot-red.png';
+import iconImgURL from '../assets/icon-192.png';
 
 const { VITE_MAPBOX_ACCESS_TOKEN: MAPBOX_ACCESS_TOKEN, DEV } = import.meta.env;
 
@@ -451,7 +452,19 @@ export function App() {
         }}
       >
         <div class="bottom-sheet-container">
-          <h2>MapWalker</h2>
+          <img
+            alt=""
+            src={iconImgURL}
+            width="96"
+            height="96"
+            style={{
+              borderRadius: 24,
+              boxShadow: '0 1px 2px #ccc',
+              float: 'right',
+              marginLeft: 10,
+            }}
+          />
+          <h1>MapWalker</h1>
           <p>
             MapWalker is a very opinionated map-based walking route planner.
           </p>
