@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useMemo } from 'preact/hooks';
+import mapboxgl from 'mapbox-gl';
 import Map, {
   AttributionControl,
   GeolocateControl,
@@ -498,6 +499,25 @@ export function App() {
               >
                 <span>📌</span> {markerPinned ? 'Unpin marker' : 'Pin marker'}
               </button>
+              {!!walkRouteGeoJSON && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const bounds = new mapboxgl.LngLatBounds();
+                    walkRouteGeoJSON.features.forEach((feature) => {
+                      feature.geometry.coordinates.forEach((coord) => {
+                        bounds.extend(coord);
+                      });
+                    });
+                    mapRef.current?.fitBounds(bounds, {
+                      padding: 100,
+                    });
+                    setMarkerSheetOpen(false);
+                  }}
+                >
+                  <span>🔭</span> Zoom whole route
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => {
