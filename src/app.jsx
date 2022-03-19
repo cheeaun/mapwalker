@@ -275,7 +275,7 @@ export function App() {
             }}
             positionOptions={{
               enableHighAccuracy: true,
-              timeout: 3000,
+              timeout: 5000,
             }}
             trackUserLocation
             showUserHeading
