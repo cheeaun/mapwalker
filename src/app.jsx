@@ -61,7 +61,17 @@ const mapStyles = {
   walkRoute2: {
     layout: {
       'symbol-placement': 'line',
-      'symbol-spacing': ['interpolate', ['linear'], ['zoom'], 13, 1, 19, 24],
+      'symbol-spacing': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        10,
+        1,
+        15,
+        20,
+        19,
+        24,
+      ],
       'icon-allow-overlap': true,
       // 'icon-ignore-placement': true,
       'icon-padding': 0,
