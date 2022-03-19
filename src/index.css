@@ -171,12 +171,39 @@ button {
   margin-bottom: env(safe-area-inset-bottom);
   margin-right: env(safe-area-inset-right);
   margin-left: env(safe-area-inset-left);
+  line-height: 1.4;
 }
-
-.legend-sheet-container h2 {
+.bottom-sheet-container h2 {
   margin-top: 0;
   padding-top: 0;
 }
+.bottom-sheet-container button {
+  flex: 1;
+  padding: 1em;
+  border: 0;
+  margin: 0;
+  color: #333;
+  background-color: #eee;
+  border-radius: 6px;
+  appearance: none;
+  cursor: pointer;
+  text-align: left;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1.5em 1fr;
+  gap: 0.5em;
+}
+.bottom-sheet-container button.block {
+  display: block;
+  width: 100%;
+}
+.bottom-sheet-container button:hover {
+  background-color: #ddd;
+}
+.bottom-sheet-container button.faded span {
+  opacity: 0.5;
+}
+
 .legend-sheet-container dl,
 .legend-sheet-container dt,
 .legend-sheet-container dd {
@@ -222,26 +249,4 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 1em;
-}
-.marker-sheet-container button {
-  flex: 1;
-  padding: 1em;
-  border: 0;
-  margin: 0;
-  color: #333;
-  background-color: #eee;
-  border-radius: 6px;
-  appearance: none;
-  cursor: pointer;
-  text-align: left;
-  align-items: center;
-  display: grid;
-  grid-template-columns: 1.5em 1fr;
-  gap: 0.5em;
-}
-.marker-sheet-container button:hover {
-  background-color: #ddd;
-}
-.marker-sheet-container button.faded span {
-  opacity: 0.5;
 }

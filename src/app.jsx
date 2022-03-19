@@ -144,6 +144,9 @@ export function App() {
   const [mapTextLayerID, setMapTextLayerID] = useState(null);
   const [legendSheetOpen, setLegendSheetOpen] = useState(false);
   const [markerSheetOpen, setMarkerSheetOpen] = useState(false);
+  const [aboutSheetOpen, setAboutSheetOpen] = useState(
+    LS.get('not-first-time') ? false : true,
+  );
   const backupDestinationMarker = useRef(destinationMarker);
   const backupWalkRouteGeoJSON = useRef(walkRouteGeoJSON);
 
@@ -408,12 +411,23 @@ export function App() {
         <button
           type="button"
           onClick={() => {
+            setAboutSheetOpen(true);
+          }}
+          title="About"
+        >
+          <svg height="24" viewBox="0 0 24 24" width="24">
+            <path d="m11 7h2v2h-2zm0 4h2v6h-2zm1-9c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
             setLegendSheetOpen(true);
           }}
           title="Legend"
         >
           <svg height="24" viewBox="0 0 24 24" width="24">
-            <path d="m11 7h2v2h-2zm0 4h2v6h-2zm1-9c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+            <path d="m11 7h6v2h-6zm0 4h6v2h-6zm0 4h6v2h-6zm-4-8h2v2h-2zm0 4h2v2h-2zm0 4h2v2h-2zm13.1-12h-16.2c-.5 0-.9.4-.9.9v16.2c0 .4.4.9.9.9h16.2c.4 0 .9-.5.9-.9v-16.2c0-.5-.5-.9-.9-.9zm-1.1 16h-14v-14h14z" />
           </svg>
         </button>
         <button
@@ -429,6 +443,51 @@ export function App() {
           </svg>
         </button>
       </div>
+      <BottomSheet
+        open={aboutSheetOpen}
+        onDismiss={() => {
+          setAboutSheetOpen(false);
+          LS.set('not-first-time', true);
+        }}
+      >
+        <div class="bottom-sheet-container">
+          <h2>MapWalker</h2>
+          <p>
+            MapWalker is a very opinionated map-based walking route planner.
+          </p>
+          <p>
+            The map tiles and styles escalate <b>all</b> walking paths and roads
+            to the surface. They are color-coded based on their types, such as
+            stairs, bridges, tunnels, etc.
+          </p>
+          <p>
+            Once a marker is placed, walk routes can be generated from current
+            location to the marker. Up to 3 walk routes will be generated from
+            different routing engines, overlayed on the map simultaneuously for
+            comparison as each has its own pros and cons.
+          </p>
+          <p>
+            <a href="https://github.com/cheeaun/mapwalker" target="_blank">
+              Built
+            </a>{' '}
+            by{' '}
+            <a href="https://twitter.com/cheeaun" target="_blank">
+              @cheeaun
+            </a>
+            .
+          </p>
+          <button
+            type="button"
+            class="block"
+            onClick={() => {
+              setAboutSheetOpen(false);
+              LS.set('not-first-time', true);
+            }}
+          >
+            🚶 Start walking now!
+          </button>
+        </div>
+      </BottomSheet>
       <BottomSheet
         open={legendSheetOpen}
         onDismiss={() => {
