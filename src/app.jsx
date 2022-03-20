@@ -173,7 +173,7 @@ export function App() {
       info[provider] = distance;
     });
     return info;
-  }, [backupWalkRouteGeoJSON]);
+  }, [walkRouteGeoJSON]);
 
   return (
     <>
