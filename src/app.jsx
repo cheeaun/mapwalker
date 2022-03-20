@@ -179,6 +179,10 @@ export function App() {
   useEffect(() => {
     if (aboutSheetOpen || markerSheetOpen || legendSheetOpen) {
       setSheetOpen(true);
+    } else if (sheetOpen) {
+      setTimeout(() => {
+        setSheetOpen(false);
+      }, 300);
     }
   }, [legendSheetOpen, markerSheetOpen, aboutSheetOpen]);
 
@@ -471,16 +475,6 @@ export function App() {
             setAboutSheetOpen(false);
             LS.set('not-first-time', true);
           }}
-          onSpringEnd={() => {
-            if (e.type === 'CLOSE') {
-              setSheetOpen(false);
-            }
-          }}
-          onSpringCancel={(e) => {
-            if (e.type === 'CLOSE') {
-              setSheetOpen(false);
-            }
-          }}
         >
           <div class="bottom-sheet-container">
             <img
@@ -537,16 +531,6 @@ export function App() {
           onDismiss={() => {
             setLegendSheetOpen(false);
           }}
-          onSpringEnd={() => {
-            if (e.type === 'CLOSE') {
-              setSheetOpen(false);
-            }
-          }}
-          onSpringCancel={(e) => {
-            if (e.type === 'CLOSE') {
-              setSheetOpen(false);
-            }
-          }}
         >
           <div class="bottom-sheet-container legend-sheet-container">
             <h2>Map Legend</h2>
@@ -597,16 +581,6 @@ export function App() {
           open={markerSheetOpen}
           onDismiss={() => {
             setMarkerSheetOpen(false);
-          }}
-          onSpringEnd={() => {
-            if (e.type === 'CLOSE') {
-              setSheetOpen(false);
-            }
-          }}
-          onSpringCancel={(e) => {
-            if (e.type === 'CLOSE') {
-              setSheetOpen(false);
-            }
           }}
         >
           <div class="bottom-sheet-container marker-sheet-container">
