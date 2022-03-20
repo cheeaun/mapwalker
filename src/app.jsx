@@ -101,6 +101,22 @@ function routeInfoText(distance) {
   )})`;
 }
 
+let orientationGranted = false;
+function requestOrientation() {
+  if (window.DeviceOrientationEvent && !orientationGranted) {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
+        .then(function (permissionState) {
+          if (permissionState === 'granted') {
+            console.log('granted');
+            orientationGranted = true;
+          }
+        })
+        .catch((e) => {});
+    }
+  }
+}
+
 export function App() {
   const mapRef = useRef();
   const overviewMapDivRef = useRef();
@@ -140,7 +156,6 @@ export function App() {
     }
   };
   const mapHandleClickDebounced = AwesomeDebouncePromise(mapHandleClick, 350);
-  const orientationGranted = useRef(false);
 
   const [mapTextLayerID, setMapTextLayerID] = useState(null);
   const [legendSheetOpen, setLegendSheetOpen] = useState(false);
@@ -238,6 +253,10 @@ export function App() {
             if (e.originalEvent.detail > 1) return;
             clickFired.current = true;
             mapHandleClickDebounced(e);
+
+            if (geolocationGeoJSON) {
+              requestOrientation();
+            }
           }}
           onDblClick={(e) => {
             if (clickFired.current) {
@@ -296,23 +315,7 @@ export function App() {
                 ],
               });
 
-              if (
-                window.DeviceOrientationEvent &&
-                !orientationGranted.current
-              ) {
-                if (
-                  typeof DeviceOrientationEvent.requestPermission === 'function'
-                ) {
-                  DeviceOrientationEvent.requestPermission()
-                    .then(function (permissionState) {
-                      if (permissionState === 'granted') {
-                        console.log('granted');
-                        orientationGranted.current = true;
-                      }
-                    })
-                    .catch((e) => {});
-                }
-              }
+              requestOrientation();
             }}
             onError={(e) => {
               alert(`${e.code}: ${e.message}`);
