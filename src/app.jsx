@@ -175,6 +175,13 @@ export function App() {
     return info;
   }, [walkRouteGeoJSON]);
 
+  const [sheetOpen, setSheetOpen] = useState(false);
+  useEffect(() => {
+    if (aboutSheetOpen || markerSheetOpen || legendSheetOpen) {
+      setSheetOpen(true);
+    }
+  }, [legendSheetOpen, markerSheetOpen, aboutSheetOpen]);
+
   return (
     <>
       <div id="map">
@@ -457,252 +464,284 @@ export function App() {
           </svg>
         </button>
       </div>
-      <BottomSheet
-        open={aboutSheetOpen}
-        onDismiss={() => {
-          setAboutSheetOpen(false);
-          LS.set('not-first-time', true);
-        }}
-      >
-        <div class="bottom-sheet-container">
-          <img
-            alt=""
-            src={iconImgURL}
-            width="96"
-            height="96"
-            style={{
-              borderRadius: 24,
-              boxShadow: '0 1px 2px #ccc',
-              float: 'right',
-              marginLeft: 10,
-            }}
-          />
-          <h1>MapWalker</h1>
-          <p>
-            MapWalker is a very opinionated map-based walking route planner.
-          </p>
-          <p>
-            The map tiles and styles escalate <b>all</b> walking paths and roads
-            to the surface. They are color-coded based on their types, such as
-            stairs, bridges, tunnels, etc.
-          </p>
-          <p>
-            Once a marker is placed, walk routes can be generated from current
-            location to the marker. Up to 3 walk routes will be generated from
-            different routing engines, overlayed on the map simultaneuously for
-            comparison as each has its own pros and cons.
-          </p>
-          <p>
-            <a href="https://github.com/cheeaun/mapwalker" target="_blank">
-              Built
-            </a>{' '}
-            by{' '}
-            <a href="https://twitter.com/cheeaun" target="_blank">
-              @cheeaun
-            </a>
-            .
-          </p>
-          <button
-            type="button"
-            class="block bold"
-            onClick={() => {
-              setAboutSheetOpen(false);
-              LS.set('not-first-time', true);
-            }}
-          >
-            🚶 Start walking now!
-          </button>
-        </div>
-      </BottomSheet>
-      <BottomSheet
-        open={legendSheetOpen}
-        onDismiss={() => {
-          setLegendSheetOpen(false);
-        }}
-      >
-        <div class="bottom-sheet-container legend-sheet-container">
-          <h2>Map Legend</h2>
-          <dl>
-            <dt>
-              <span class="path" />
-            </dt>
-            <dd>Foot paths, cycling paths</dd>
-            <dt>
-              <span class="bridge" />
-            </dt>
-            <dd>Bridges</dd>
-            <dt>
-              <span class="stairs" />
-            </dt>
-            <dd>Stairs</dd>
-            <dt>
-              <span class="tunnel" />
-            </dt>
-            <dd>Tunnels, underground paths, under bridge</dd>
-            <dt>
-              <img src={walkDotBlueImgURL} width="10" height="10" />
-            </dt>
-            <dd>
-              Route from OpenStreetMap
-              {distances['osm-de'] &&
-                ` - ${routeInfoText(distances['osm-de'])}`}
-            </dd>
-            <dt>
-              <img src={walkDotPurpleImgURL} width="10" height="10" />
-            </dt>
-            <dd>
-              Route from OpenRouteService
-              {distances.ors && ` - ${routeInfoText(distances.ors)}`}
-            </dd>
-            <dt>
-              <img src={walkDotRedImgURL} width="10" height="10" />
-            </dt>
-            <dd>
-              Route from GraphHopper
-              {distances.graphhopper &&
-                ` - ${routeInfoText(distances.graphhopper)}`}
-            </dd>
-          </dl>
-        </div>
-      </BottomSheet>
-      <BottomSheet
-        open={markerSheetOpen}
-        onDismiss={() => {
-          setMarkerSheetOpen(false);
-        }}
-      >
-        <div class="bottom-sheet-container marker-sheet-container">
-          {!!destinationMarker ? (
-            <>
-              <button
-                type="button"
-                onClick={() => {
-                  setDestinationMarker(null);
-                  backupDestinationMarker.current = destinationMarker;
-                  setMarkerPinned(false);
-                }}
-              >
-                <span>❌</span> Remove marker
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setMarkerPinned(!markerPinned);
-                  setMarkerSheetOpen(false);
-                }}
-                class={markerPinned ? '' : 'faded'}
-              >
-                <span>📌</span> {markerPinned ? 'Unpin marker' : 'Pin marker'}
-              </button>
-              {!!walkRouteGeoJSON && (
+      <div class="bd" onClick={(e) => e.stopPropagation()} hidden={!sheetOpen}>
+        <BottomSheet
+          open={aboutSheetOpen}
+          onDismiss={() => {
+            setAboutSheetOpen(false);
+            LS.set('not-first-time', true);
+          }}
+          onSpringEnd={() => {
+            if (e.type === 'CLOSE') {
+              setSheetOpen(false);
+            }
+          }}
+          onSpringCancel={(e) => {
+            if (e.type === 'CLOSE') {
+              setSheetOpen(false);
+            }
+          }}
+        >
+          <div class="bottom-sheet-container">
+            <img
+              alt=""
+              src={iconImgURL}
+              width="96"
+              height="96"
+              style={{
+                borderRadius: 24,
+                boxShadow: '0 1px 2px #ccc',
+                float: 'right',
+                marginLeft: 10,
+              }}
+            />
+            <h1>MapWalker</h1>
+            <p>
+              MapWalker is a very opinionated map-based walking route planner.
+            </p>
+            <p>
+              The map tiles and styles escalate <b>all</b> walking paths and
+              roads to the surface. They are color-coded based on their types,
+              such as stairs, bridges, tunnels, etc.
+            </p>
+            <p>
+              Once a marker is placed, walk routes can be generated from current
+              location to the marker. Up to 3 walk routes will be generated from
+              different routing engines, overlayed on the map simultaneuously
+              for comparison as each has its own pros and cons.
+            </p>
+            <p>
+              <a href="https://github.com/cheeaun/mapwalker" target="_blank">
+                Built
+              </a>{' '}
+              by{' '}
+              <a href="https://twitter.com/cheeaun" target="_blank">
+                @cheeaun
+              </a>
+              .
+            </p>
+            <button
+              type="button"
+              class="block bold"
+              onClick={() => {
+                setAboutSheetOpen(false);
+                LS.set('not-first-time', true);
+              }}
+            >
+              🚶 Start walking now!
+            </button>
+          </div>
+        </BottomSheet>
+        <BottomSheet
+          open={legendSheetOpen}
+          onDismiss={() => {
+            setLegendSheetOpen(false);
+          }}
+          onSpringEnd={() => {
+            if (e.type === 'CLOSE') {
+              setSheetOpen(false);
+            }
+          }}
+          onSpringCancel={(e) => {
+            if (e.type === 'CLOSE') {
+              setSheetOpen(false);
+            }
+          }}
+        >
+          <div class="bottom-sheet-container legend-sheet-container">
+            <h2>Map Legend</h2>
+            <dl>
+              <dt>
+                <span class="path" />
+              </dt>
+              <dd>Foot paths, cycling paths</dd>
+              <dt>
+                <span class="bridge" />
+              </dt>
+              <dd>Bridges</dd>
+              <dt>
+                <span class="stairs" />
+              </dt>
+              <dd>Stairs</dd>
+              <dt>
+                <span class="tunnel" />
+              </dt>
+              <dd>Tunnels, underground paths, under bridge</dd>
+              <dt>
+                <img src={walkDotBlueImgURL} width="10" height="10" />
+              </dt>
+              <dd>
+                Route from OpenStreetMap
+                {distances['osm-de'] &&
+                  ` - ${routeInfoText(distances['osm-de'])}`}
+              </dd>
+              <dt>
+                <img src={walkDotPurpleImgURL} width="10" height="10" />
+              </dt>
+              <dd>
+                Route from OpenRouteService
+                {distances.ors && ` - ${routeInfoText(distances.ors)}`}
+              </dd>
+              <dt>
+                <img src={walkDotRedImgURL} width="10" height="10" />
+              </dt>
+              <dd>
+                Route from GraphHopper
+                {distances.graphhopper &&
+                  ` - ${routeInfoText(distances.graphhopper)}`}
+              </dd>
+            </dl>
+          </div>
+        </BottomSheet>
+        <BottomSheet
+          open={markerSheetOpen}
+          onDismiss={() => {
+            setMarkerSheetOpen(false);
+          }}
+          onSpringEnd={() => {
+            if (e.type === 'CLOSE') {
+              setSheetOpen(false);
+            }
+          }}
+          onSpringCancel={(e) => {
+            if (e.type === 'CLOSE') {
+              setSheetOpen(false);
+            }
+          }}
+        >
+          <div class="bottom-sheet-container marker-sheet-container">
+            {!!destinationMarker ? (
+              <>
                 <button
                   type="button"
                   onClick={() => {
-                    const bounds = new mapboxgl.LngLatBounds();
-                    walkRouteGeoJSON.features.forEach((feature) => {
-                      feature.geometry.coordinates.forEach((coord) => {
-                        bounds.extend(coord);
-                      });
-                    });
-                    mapRef.current?.fitBounds(bounds, {
-                      padding: 100,
-                    });
+                    setDestinationMarker(null);
+                    backupDestinationMarker.current = destinationMarker;
+                    setMarkerPinned(false);
+                  }}
+                >
+                  <span>❌</span> Remove marker
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMarkerPinned(!markerPinned);
                     setMarkerSheetOpen(false);
                   }}
+                  class={markerPinned ? '' : 'faded'}
                 >
-                  <span>🔭</span> Zoom whole route
+                  <span>📌</span> {markerPinned ? 'Unpin marker' : 'Pin marker'}
                 </button>
-              )}
-              <button
-                type="button"
-                onClick={() => {
-                  mapRef.current?.flyTo({
-                    center: destinationMarker,
-                  });
-                  setMarkerSheetOpen(false);
-                }}
-              >
-                <span>🔍</span> Fly to marker
-              </button>
-              <button
-                type="button"
-                class="bold"
-                onClick={async () => {
-                  setLoading(true);
-                  setMarkerSheetOpen(false);
-                  console.log({
-                    geolocationGeoJSON,
-                    destinationMarker,
-                  });
-                  if (!geolocationGeoJSON) {
-                    alert('Please allow location access to generate routes');
-                    return;
-                  }
-                  const results = await fetchRoutes(
-                    geolocationGeoJSON.features[0].geometry.coordinates,
-                    [destinationMarker.lng, destinationMarker.lat],
-                  );
-                  setWalkRouteGeoJSON(results);
-                  setLoading(false);
-                  setMarkerPinned(true);
-                }}
-              >
-                <span>🔃</span> Generate walk routes to marker
-              </button>
-            </>
-          ) : (
-            <>
-              {!destinationMarker && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    const center = mapRef.current?.getCenter();
-                    setDestinationMarker({
-                      lat: center.lat,
-                      lng: center.lng,
-                    });
-                    setMarkerSheetOpen(false);
-                  }}
-                >
-                  <span>📌</span> Place marker on map
-                </button>
-              )}
-              {!destinationMarker && backupDestinationMarker.current && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDestinationMarker(backupDestinationMarker.current);
-                  }}
-                >
-                  <span>♻️</span> Restore marker
-                </button>
-              )}
-              {!!walkRouteGeoJSON ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    backupWalkRouteGeoJSON.current = walkRouteGeoJSON;
-                    setWalkRouteGeoJSON(null);
-                  }}
-                >
-                  🗑️ Clear route
-                </button>
-              ) : (
-                backupWalkRouteGeoJSON.current && (
+                {!!walkRouteGeoJSON && (
                   <button
                     type="button"
                     onClick={() => {
-                      setWalkRouteGeoJSON(backupWalkRouteGeoJSON.current);
+                      const bounds = new mapboxgl.LngLatBounds();
+                      walkRouteGeoJSON.features.forEach((feature) => {
+                        feature.geometry.coordinates.forEach((coord) => {
+                          bounds.extend(coord);
+                        });
+                      });
+                      mapRef.current?.fitBounds(bounds, {
+                        padding: 100,
+                      });
+                      setMarkerSheetOpen(false);
                     }}
                   >
-                    <span>♻️</span> Restore route
+                    <span>🔭</span> Zoom whole route
                   </button>
-                )
-              )}
-            </>
-          )}
-        </div>
-      </BottomSheet>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    mapRef.current?.flyTo({
+                      center: destinationMarker,
+                    });
+                    setMarkerSheetOpen(false);
+                  }}
+                >
+                  <span>🔍</span> Fly to marker
+                </button>
+                <button
+                  type="button"
+                  class="bold"
+                  onClick={async () => {
+                    setLoading(true);
+                    setMarkerSheetOpen(false);
+                    console.log({
+                      geolocationGeoJSON,
+                      destinationMarker,
+                    });
+                    if (!geolocationGeoJSON) {
+                      alert('Please allow location access to generate routes');
+                      return;
+                    }
+                    const results = await fetchRoutes(
+                      geolocationGeoJSON.features[0].geometry.coordinates,
+                      [destinationMarker.lng, destinationMarker.lat],
+                    );
+                    setWalkRouteGeoJSON(results);
+                    setLoading(false);
+                    setMarkerPinned(true);
+                  }}
+                >
+                  <span>🔃</span> Generate walk routes to marker
+                </button>
+              </>
+            ) : (
+              <>
+                {!destinationMarker && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const center = mapRef.current?.getCenter();
+                      setDestinationMarker({
+                        lat: center.lat,
+                        lng: center.lng,
+                      });
+                      setMarkerSheetOpen(false);
+                    }}
+                  >
+                    <span>📌</span> Place marker on map
+                  </button>
+                )}
+                {!destinationMarker && backupDestinationMarker.current && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDestinationMarker(backupDestinationMarker.current);
+                    }}
+                  >
+                    <span>♻️</span> Restore marker
+                  </button>
+                )}
+                {!!walkRouteGeoJSON ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      backupWalkRouteGeoJSON.current = walkRouteGeoJSON;
+                      setWalkRouteGeoJSON(null);
+                    }}
+                  >
+                    <span>🗑️</span> Clear route
+                  </button>
+                ) : (
+                  backupWalkRouteGeoJSON.current && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setWalkRouteGeoJSON(backupWalkRouteGeoJSON.current);
+                      }}
+                    >
+                      <span>♻️</span> Restore route
+                    </button>
+                  )
+                )}
+              </>
+            )}
+          </div>
+        </BottomSheet>
+      </div>
     </>
   );
 }
