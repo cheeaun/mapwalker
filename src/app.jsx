@@ -420,7 +420,10 @@ export function App() {
           title="About"
         >
           <svg height="24" viewBox="0 0 24 24" width="24">
-            <path d="m11 7h2v2h-2zm0 4h2v6h-2zm1-9c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+            <path
+              fill="currentColor"
+              d="m11 7h2v2h-2zm0 4h2v6h-2zm1-9c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+            />
           </svg>
         </button>
         <button
@@ -431,11 +434,15 @@ export function App() {
           title="Legend"
         >
           <svg height="24" viewBox="0 0 24 24" width="24">
-            <path d="m11 7h6v2h-6zm0 4h6v2h-6zm0 4h6v2h-6zm-4-8h2v2h-2zm0 4h2v2h-2zm0 4h2v2h-2zm13.1-12h-16.2c-.5 0-.9.4-.9.9v16.2c0 .4.4.9.9.9h16.2c.4 0 .9-.5.9-.9v-16.2c0-.5-.5-.9-.9-.9zm-1.1 16h-14v-14h14z" />
+            <path
+              fill="currentColor"
+              d="m11 7h6v2h-6zm0 4h6v2h-6zm0 4h6v2h-6zm-4-8h2v2h-2zm0 4h2v2h-2zm0 4h2v2h-2zm13.1-12h-16.2c-.5 0-.9.4-.9.9v16.2c0 .4.4.9.9.9h16.2c.4 0 .9-.5.9-.9v-16.2c0-.5-.5-.9-.9-.9zm-1.1 16h-14v-14h14z"
+            />
           </svg>
         </button>
         <button
           type="button"
+          class="bold"
           onClick={() => {
             setMarkerSheetOpen(true);
           }}
@@ -443,7 +450,10 @@ export function App() {
           disabled={loading}
         >
           <svg height="24" viewBox="0 0 24 24" width="24">
-            <path d="m3 3v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4zm4-16v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4z" />
+            <path
+              fill="currentColor"
+              d="m3 3v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4zm4-16v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4z"
+            />
           </svg>
         </button>
       </div>
@@ -494,7 +504,7 @@ export function App() {
           </p>
           <button
             type="button"
-            class="block"
+            class="block bold"
             onClick={() => {
               setAboutSheetOpen(false);
               LS.set('not-first-time', true);
@@ -616,6 +626,7 @@ export function App() {
               </button>
               <button
                 type="button"
+                class="bold"
                 onClick={async () => {
                   setLoading(true);
                   setMarkerSheetOpen(false);

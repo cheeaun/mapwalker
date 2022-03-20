@@ -14,6 +14,10 @@ body {
   box-sizing: border-box;
 }
 
+a {
+  color: #0e90df;
+}
+
 button {
   color: inherit;
   font-family: inherit;
@@ -106,7 +110,7 @@ button {
   padding: 0.9em;
   border: 0;
   margin: 0;
-  color: #333;
+  color: #999;
   cursor: pointer;
   font-size: 14px;
   position: relative;
@@ -120,20 +124,33 @@ button {
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
 }
+#actions button.bold {
+  color: #333;
+}
+#actions button:hover {
+  color: #000;
+}
 #actions button.faded {
   opacity: 0.5;
 }
-#actions button:hover:after {
+#actions button:after {
+  color: #333;
   content: attr(title);
   display: block;
   position: absolute;
   top: 50%;
   left: 0;
-  transform: translate(-105%, -50%);
+  transform: translate(-110%, -50%);
   white-space: nowrap;
   background-color: #fff;
   padding: 0.5em;
   border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+#actions button:hover:after {
+  opacity: 1;
 }
 
 .loading {
@@ -185,7 +202,7 @@ button {
   margin: 0;
   color: #333;
   background-color: #eee;
-  border-radius: 6px;
+  border-radius: 12px;
   appearance: none;
   cursor: pointer;
   text-align: left;
@@ -200,6 +217,14 @@ button {
 }
 .bottom-sheet-container button:hover {
   background-color: #ddd;
+}
+.bottom-sheet-container button.bold {
+  font-weight: bold;
+  color: #fff;
+  background-color: #0e90df;
+}
+.bottom-sheet-container button.bold:hover {
+  background-color: #017dca;
 }
 .bottom-sheet-container button.faded span {
   opacity: 0.5;
