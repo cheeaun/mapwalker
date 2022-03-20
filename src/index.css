@@ -273,13 +273,6 @@ button {
 [data-rsbs-header] {
   box-shadow: none;
 }
-.bd {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
 
 .marker-sheet-container {
   display: flex;
