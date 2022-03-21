@@ -153,6 +153,31 @@ button {
   opacity: 1;
 }
 
+#overview-map button {
+  position: absolute;
+  z-index: 1;
+  top: 5px;
+  right: 5px;
+  border-radius: 999px;
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 5px;
+  margin: 0;
+  line-height: 0;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(3px) saturate(180%);
+  pointer-events: auto;
+  cursor: pointer;
+}
+#overview-map button:hover {
+  border-color: #000;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+#overview-map button:active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 .loading {
   width: 16px;
   height: 16px;
@@ -212,7 +237,6 @@ button {
   gap: 0.5em;
 }
 .bottom-sheet-container button.block {
-  display: block;
   width: 100%;
 }
 .bottom-sheet-container button:hover {
@@ -285,4 +309,31 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 1em;
+}
+
+.split-view #map {
+  bottom: 40vh;
+  bottom: 40dvh;
+}
+.split-view #overview-map {
+  width: auto;
+  max-width: none;
+  height: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 60vh;
+  top: 60dvh;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+  pointer-events: auto;
+  transition: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+}
+.split-view #overview-map[hidden] {
+  opacity: 1;
+}
+.split-view #overview-map.faded .mapboxgl-canvas-container {
+  opacity: 1;
 }

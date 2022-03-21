@@ -186,8 +186,14 @@ export function App() {
     }
   }, [legendSheetOpen, markerSheetOpen, aboutSheetOpen]);
 
+  const [overviewMapExpanded, setOverviewMapExpanded] = useState(false);
+  useEffect(() => {
+    mapRef.current?.resize();
+    overviewMapRef.current?.resize();
+  }, [overviewMapExpanded]);
+
   return (
-    <>
+    <div class={`${overviewMapExpanded ? 'split-view' : ''}`}>
       <div id="map">
         <Map
           ref={mapRef}
@@ -205,6 +211,7 @@ export function App() {
           maxZoom={21}
           attributionControl={false}
           logoPosition="top-right"
+          keyboard={false}
           onLoad={(e) => {
             geolocateControlRef.current?.trigger();
 
@@ -373,9 +380,9 @@ export function App() {
             zoom: 11,
           }}
           attributionControl={false}
-          interactive={false}
+          interactive={!overviewMapExpanded}
           maxZoom={16}
-          minZoom={14.5}
+          keyboard={false}
         >
           <Source
             id="walk-route"
@@ -420,6 +427,28 @@ export function App() {
             <img src={pinImgURL} width="10" hidden={!destinationMarker} />
           </Marker>
         </Map>
+        <button
+          type="button"
+          onClick={() => {
+            setOverviewMapExpanded(!overviewMapExpanded);
+          }}
+        >
+          {overviewMapExpanded ? (
+            <svg height="24" viewBox="0 0 24 24" width="24">
+              <path
+                fill="currentColor"
+                d="m5 16h3v3h2v-5h-5zm3-8h-3v2h5v-5h-2zm6 11h2v-3h3v-2h-5zm2-11v-3h-2v5h5v-2z"
+              />
+            </svg>
+          ) : (
+            <svg height="24" viewBox="0 0 24 24" width="24">
+              <path
+                fill="currentColor"
+                d="m7 14h-2v5h5v-2h-3zm-2-4h2v-3h3v-2h-5zm12 7h-3v2h5v-5h-2zm-3-12v2h3v3h2v-5z"
+              />
+            </svg>
+          )}
+        </button>
       </div>
       <div id="actions">
         {loading && <div class="loading" />}
@@ -522,7 +551,7 @@ export function App() {
                 LS.set('not-first-time', true);
               }}
             >
-              🚶 Start walking now!
+              <span>🚶</span> Start walking now!
             </button>
           </div>
         </BottomSheet>
@@ -638,7 +667,7 @@ export function App() {
                 </button>
                 <button
                   type="button"
-                  class="bold"
+                  class="bold block"
                   onClick={async () => {
                     setLoading(true);
                     setMarkerSheetOpen(false);
@@ -716,6 +745,6 @@ export function App() {
           </div>
         </BottomSheet>
       </div>
-    </>
+    </div>
   );
 }
