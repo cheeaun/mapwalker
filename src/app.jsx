@@ -258,7 +258,7 @@ export function App() {
             const { viewState } = e;
             const lowZoomLevel = viewState.zoom < 16;
             overviewMapDivRef.current.hidden = lowZoomLevel;
-            if (!lowZoomLevel) {
+            if (!lowZoomLevel && !overviewMapExpanded) {
               overviewMapRef.current?.jumpTo({
                 ...viewState,
                 center: [viewState.longitude, viewState.latitude],
