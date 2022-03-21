@@ -192,6 +192,9 @@ export function App() {
   useEffect(() => {
     mapRef.current?.resize();
     overviewMapRef.current?.resize();
+    if (geolocationGeoJSON) {
+      geolocateControlRef.current?.trigger();
+    }
   }, [overviewMapExpanded]);
 
   const aboutSheetInitialFocusRef = useRef();
