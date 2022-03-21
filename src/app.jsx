@@ -193,6 +193,9 @@ export function App() {
     overviewMapRef.current?.resize();
   }, [overviewMapExpanded]);
 
+  const aboutSheetInitialFocusRef = useRef();
+  const markerSheetInitialFocusRef = useRef();
+
   return (
     <div class={`${overviewMapExpanded ? 'split-view' : ''}`}>
       <div id="map">
@@ -517,6 +520,7 @@ export function App() {
             setAboutSheetOpen(false);
             LS.set('not-first-time', true);
           }}
+          initialFocusRef={aboutSheetInitialFocusRef}
         >
           <div class="bottom-sheet-container">
             <img
@@ -559,6 +563,7 @@ export function App() {
             <button
               type="button"
               class="block bold"
+              ref={aboutSheetInitialFocusRef}
               onClick={() => {
                 setAboutSheetOpen(false);
                 LS.set('not-first-time', true);
@@ -624,6 +629,7 @@ export function App() {
           onDismiss={() => {
             setMarkerSheetOpen(false);
           }}
+          initialFocusRef={markerSheetInitialFocusRef}
         >
           <div class="bottom-sheet-container marker-sheet-container">
             {!!destinationMarker ? (
@@ -681,6 +687,7 @@ export function App() {
                 <button
                   type="button"
                   class="bold block"
+                  ref={markerSheetInitialFocusRef}
                   onClick={async () => {
                     setLoading(true);
                     setMarkerSheetOpen(false);
