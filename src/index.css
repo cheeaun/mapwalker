@@ -337,3 +337,7 @@ button {
 .split-view #overview-map.faded .mapboxgl-canvas-container {
   opacity: 1;
 }
+
+.insignificant {
+  opacity: 0.6;
+}

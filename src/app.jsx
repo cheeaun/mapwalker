@@ -14,6 +14,7 @@ import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import prettyMetric from 'pretty-metric';
 import humanizeDuration from 'humanize-duration';
+import haversine from 'haversine-distance';
 
 import { fetchRoutes } from './apis';
 import LS from './ls';
@@ -195,6 +196,24 @@ export function App() {
 
   const aboutSheetInitialFocusRef = useRef();
   const markerSheetInitialFocusRef = useRef();
+
+  const airDistanceToMarker = useMemo(() => {
+    if (!destinationMarker || !geolocationGeoJSON?.features?.length) return 0;
+    const { lng, lat } = destinationMarker;
+    const [originLng, originLat] =
+      geolocationGeoJSON.features[0].geometry.coordinates;
+    console.log(originLng, originLat, lng, lat);
+    return haversine(
+      {
+        longitude: originLng,
+        latitude: originLat,
+      },
+      {
+        longitude: lng,
+        latitude: lat,
+      },
+    );
+  }, [destinationMarker, geolocationGeoJSON]);
 
   return (
     <div class={`${overviewMapExpanded ? 'split-view' : ''}`}>
@@ -603,23 +622,42 @@ export function App() {
               </dt>
               <dd>
                 Route from OpenStreetMap
-                {distances['osm-de'] &&
-                  ` - ${routeInfoText(distances['osm-de'])}`}
+                {distances['osm-de'] && (
+                  <>
+                    <br />
+                    <span class="insignificant">
+                      {routeInfoText(distances['osm-de'])}
+                    </span>
+                  </>
+                )}
               </dd>
               <dt>
                 <img src={walkDotPurpleImgURL} width="10" height="10" />
               </dt>
               <dd>
                 Route from OpenRouteService
-                {distances.ors && ` - ${routeInfoText(distances.ors)}`}
+                {distances.ors && (
+                  <>
+                    <br />
+                    <span class="insignificant">
+                      {routeInfoText(distances.ors)}
+                    </span>
+                  </>
+                )}
               </dd>
               <dt>
                 <img src={walkDotRedImgURL} width="10" height="10" />
               </dt>
               <dd>
                 Route from GraphHopper
-                {distances.graphhopper &&
-                  ` - ${routeInfoText(distances.graphhopper)}`}
+                {distances.graphhopper && (
+                  <>
+                    <br />
+                    <span class="insignificant">
+                      {routeInfoText(distances.graphhopper)}
+                    </span>
+                  </>
+                )}
               </dd>
             </dl>
           </div>
@@ -632,6 +670,15 @@ export function App() {
           initialFocusRef={markerSheetInitialFocusRef}
         >
           <div class="bottom-sheet-container marker-sheet-container">
+            {!!destinationMarker && !!geolocationGeoJSON && (
+              <div
+                class="insignificant"
+                style={{ width: '100%', textAlign: 'center' }}
+              >
+                Air distance to marker:{' '}
+                {prettyMetric(airDistanceToMarker).humanize()}
+              </div>
+            )}
             {!!destinationMarker ? (
               <>
                 <button
