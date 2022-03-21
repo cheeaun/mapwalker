@@ -102,7 +102,7 @@ function routeInfoText(distance) {
 }
 
 let orientationGranted = false;
-function requestOrientation() {
+function requestOrientation(fn = () => {}) {
   if (window.DeviceOrientationEvent && !orientationGranted) {
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
@@ -110,6 +110,7 @@ function requestOrientation() {
           if (permissionState === 'granted') {
             console.log('granted');
             orientationGranted = true;
+            fn();
           }
         })
         .catch((e) => {});
@@ -273,7 +274,14 @@ export function App() {
             mapHandleClickDebounced(e);
 
             if (geolocationGeoJSON) {
-              requestOrientation();
+              requestOrientation(() => {
+                // Turn off
+                geolocateControlRef.current?.trigger();
+                // Turn it back on again
+                setTimeout(() => {
+                  geolocateControlRef.current?.trigger();
+                }, 1);
+              });
             }
           }}
           onDblClick={(e) => {
@@ -320,23 +328,28 @@ export function App() {
             onGeolocate={(e) => {
               console.log({ onGeolocate: e });
               const { coords } = e;
-              setGeolocationGeoJSON({
-                type: 'FeatureCollection',
-                features: [
-                  {
-                    type: 'Feature',
-                    geometry: {
-                      type: 'Point',
-                      coordinates: [coords.longitude, coords.latitude],
+              if (coords) {
+                setGeolocationGeoJSON({
+                  type: 'FeatureCollection',
+                  features: [
+                    {
+                      type: 'Feature',
+                      geometry: {
+                        type: 'Point',
+                        coordinates: [coords.longitude, coords.latitude],
+                      },
                     },
-                  },
-                ],
-              });
+                  ],
+                });
 
-              requestOrientation();
+                requestOrientation();
+              } else {
+                setGeolocationGeoJSON(null);
+              }
             }}
             onError={(e) => {
               alert(`${e.code}: ${e.message}`);
+              setGeolocationGeoJSON(null);
             }}
           />
           <Source
