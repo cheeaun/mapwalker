@@ -202,7 +202,6 @@ export function App() {
     const { lng, lat } = destinationMarker;
     const [originLng, originLat] =
       geolocationGeoJSON.features[0].geometry.coordinates;
-    console.log(originLng, originLat, lng, lat);
     return haversine(
       {
         longitude: originLng,
