@@ -351,3 +351,8 @@ button {
 .insignificant {
   opacity: 0.6;
 }
+
+.mapboxgl-user-location-accuracy-circle {
+  transition-property: width, height;
+  transition-duration: 0.3s;
+}
