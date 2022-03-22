@@ -455,9 +455,9 @@ export function App() {
               id="geolocation-outer"
               type="circle"
               paint={{
-                'circle-radius': 12,
+                'circle-radius': 16,
                 'circle-color': '#1ea1f1',
-                'circle-opacity': 0.3,
+                'circle-opacity': 0.2,
               }}
               beforeId={mapTextLayerID}
             />
