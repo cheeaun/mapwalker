@@ -1,4 +1,10 @@
-import { useRef, useState, useEffect, useMemo } from 'preact/hooks';
+import {
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'preact/hooks';
 import mapboxgl from 'mapbox-gl';
 import Map, {
   AttributionControl,
@@ -217,6 +223,19 @@ export function App() {
     );
   }, [destinationMarker, geolocationGeoJSON]);
 
+  const requestOrientationTriggerGeolocation = useCallback(() => {
+    if (geolocationGeoJSON) {
+      requestOrientation(() => {
+        // Turn off
+        geolocateControlRef.current?.trigger();
+        // Turn it back on again
+        setTimeout(() => {
+          geolocateControlRef.current?.trigger();
+        }, 1);
+      });
+    }
+  }, [geolocationGeoJSON]);
+
   return (
     <div class={`${overviewMapExpanded ? 'split-view' : ''}`}>
       <div id="map">
@@ -296,17 +315,7 @@ export function App() {
             if (e.originalEvent.detail > 1) return;
             clickFired.current = true;
             mapHandleClickDebounced(e);
-
-            if (geolocationGeoJSON) {
-              requestOrientation(() => {
-                // Turn off
-                geolocateControlRef.current?.trigger();
-                // Turn it back on again
-                setTimeout(() => {
-                  geolocateControlRef.current?.trigger();
-                }, 1);
-              });
-            }
+            requestOrientationTriggerGeolocation();
           }}
           onDblClick={(e) => {
             if (clickFired.current) {
@@ -336,7 +345,11 @@ export function App() {
             collapsed={true}
             position="top-left"
           />
-          <NavigationControl visualizePitch={true} position="top-right" />
+          <NavigationControl
+            showZoom={false}
+            visualizePitch
+            position="top-right"
+          />
           <GeolocateControl
             ref={geolocateControlRef}
             fitBoundsOptions={{
@@ -420,6 +433,9 @@ export function App() {
           interactive={!overviewMapExpanded}
           maxZoom={16}
           keyboard={false}
+          onClick={() => {
+            requestOrientationTriggerGeolocation();
+          }}
         >
           <Source
             id="walk-route"
@@ -461,7 +477,7 @@ export function App() {
             longitude={destinationMarker?.lng || 0}
             latitude={destinationMarker?.lat || 0}
           >
-            <img src={pinImgURL} width="10" hidden={!destinationMarker} />
+            <img src={pinImgURL} width="12" hidden={!destinationMarker} />
           </Marker>
         </Map>
         <button

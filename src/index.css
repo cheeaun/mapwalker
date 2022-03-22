@@ -100,6 +100,11 @@ button {
   margin-bottom: env(safe-area-inset-bottom);
   margin-right: env(safe-area-inset-right);
 }
+.split-view #actions {
+  bottom: calc(40vh + 10px);
+  bottom: calc(40dvh + 10px);
+  margin-bottom: 0;
+}
 
 #actions .loading {
   position: absolute;
@@ -169,6 +174,11 @@ button {
   backdrop-filter: blur(3px) saturate(180%);
   pointer-events: auto;
   cursor: pointer;
+}
+.split-view #overview-map button {
+  top: 10px;
+  right: 10px;
+  padding: 10px;
 }
 #overview-map button:hover {
   border-color: #000;
