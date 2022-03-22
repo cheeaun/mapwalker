@@ -365,7 +365,7 @@ export function App() {
             onGeolocate={(e) => {
               console.log({ onGeolocate: e });
               const { coords } = e;
-              if (coords) {
+              if (coords?.longitude) {
                 setGeolocationGeoJSON({
                   type: 'FeatureCollection',
                   features: [
