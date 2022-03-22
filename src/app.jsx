@@ -5,6 +5,7 @@ import {
   useMemo,
   useCallback,
 } from 'preact/hooks';
+import { Suspense, lazy } from 'preact/compat';
 import mapboxgl from 'mapbox-gl';
 import Map, {
   AttributionControl,
@@ -13,9 +14,7 @@ import Map, {
   Marker,
   NavigationControl,
   Source,
-  useControl,
 } from 'react-map-gl';
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import prettyMetric from 'pretty-metric';
@@ -34,12 +33,6 @@ const { VITE_MAPBOX_ACCESS_TOKEN: MAPBOX_ACCESS_TOKEN, DEV } = import.meta.env;
 
 const OVERVIEW_ZOOM_BACK = 2;
 
-function GeocoderControl(props) {
-  useControl(() => new MapboxGeocoder(props), {
-    position: props.position,
-  });
-  return null;
-}
 const MAPSTYLE = `mapbox://styles/cheeaun/cl0ds1jbz003014px6nthvdle${
   DEV ? '/draft' : ''
 }`;
@@ -127,6 +120,8 @@ function requestOrientation(fn = () => {}) {
     }
   }
 }
+
+const GeocoderControl = lazy(() => import('./geocoder-control'));
 
 export function App() {
   const mapRef = useRef();
@@ -339,13 +334,15 @@ export function App() {
           }}
         >
           <AttributionControl position="top-right" compact />
-          <GeocoderControl
-            accessToken={MAPBOX_ACCESS_TOKEN}
-            marker={false}
-            clearAndBlurOnSelect={true}
-            collapsed={true}
-            position="top-left"
-          />
+          <Suspense>
+            <GeocoderControl
+              accessToken={MAPBOX_ACCESS_TOKEN}
+              marker={false}
+              clearAndBlurOnSelect={true}
+              collapsed={true}
+              position="top-left"
+            />
+          </Suspense>
           <NavigationControl
             showZoom={false}
             visualizePitch
