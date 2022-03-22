@@ -385,7 +385,13 @@ export function App() {
               }
             }}
             onError={(e) => {
-              alert(`${e.code}: ${e.message}`);
+              const { code, message } = e;
+              // 1. PERMISSION_DENIED
+              // 2. POSITION_UNAVAILABLE
+              // 3. TIMEOUT
+              if (code !== 3) {
+                alert(`${code}: ${message}`);
+              }
               setGeolocationGeoJSON(null);
             }}
           />
