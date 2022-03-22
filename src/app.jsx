@@ -40,6 +40,9 @@ function GeocoderControl(props) {
   });
   return null;
 }
+const MAPSTYLE = `mapbox://styles/cheeaun/cl0ds1jbz003014px6nthvdle${
+  DEV ? '/draft' : ''
+}`;
 
 const emptyGeoJSON = {
   type: 'FeatureCollection',
@@ -242,9 +245,7 @@ export function App() {
         <Map
           ref={mapRef}
           mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
-          mapStyle={`mapbox://styles/cheeaun/cl0ds1jbz003014px6nthvdle${
-            DEV ? '/draft' : ''
-          }`}
+          mapStyle={MAPSTYLE}
           initialViewState={
             LS.get('view-state') || {
               center: [103.8198, 1.3521],
@@ -430,7 +431,7 @@ export function App() {
         <Map
           ref={overviewMapRef}
           mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
-          mapStyle="mapbox://styles/cheeaun/cl0ds1jbz003014px6nthvdle/draft"
+          mapStyle={MAPSTYLE}
           initialViewState={{
             center: [103.8198, 1.3521],
             zoom: 11,
