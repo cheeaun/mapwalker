@@ -40,6 +40,9 @@ button {
   left: env(safe-area-inset-left);
   pointer-events: none;
 }
+.split-view #map .mapboxgl-control-container {
+  bottom: 0;
+}
 #map .mapboxgl-control-container > * {
   pointer-events: auto;
 }
