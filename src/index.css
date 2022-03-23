@@ -25,6 +25,10 @@ button {
   user-select: none;
 }
 
+.mapboxgl-canvas {
+  transition: filter 0.5s ease-in-out;
+}
+
 #map {
   position: fixed;
   top: 0;
@@ -363,4 +367,65 @@ button {
 
 .mapboxgl-ctrl-bottom-right {
   bottom: 170px;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #eee;
+    background-color: #333;
+  }
+  [data-rsbs-overlay] {
+    background-color: #333;
+  }
+  .mapboxgl-canvas,
+  .mapboxgl-ctrl,
+  .legend-sheet-container dt span,
+  .legend-sheet-container dt img {
+    filter: invert(0.75) hue-rotate(180deg) contrast(1.5);
+  }
+  #actions {
+    background-color: #555;
+  }
+  #actions button {
+    background-color: #333;
+  }
+  #actions button.bold {
+    color: #eee;
+  }
+  #actions button:hover {
+    color: #fff;
+  }
+  #actions button:after {
+    color: #eee;
+    background-color: #333;
+  }
+  #overview-map {
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
+  }
+  #overview-map.faded {
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+  }
+  #overview-map button {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  #overview-map button:hover {
+    border-color: #999;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .loading {
+    border-color: #eee;
+  }
+  .bottom-sheet-container button {
+    color: #eee;
+    background-color: #555;
+  }
+  .bottom-sheet-container button:hover {
+    background-color: #666;
+  }
+  :root {
+    --rsbs-handle-bg: #666;
+  }
+  .split-view #overview-map {
+    border-top-color: rgba(255, 255, 255, 0.3);
+  }
 }
