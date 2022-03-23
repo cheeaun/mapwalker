@@ -334,6 +334,35 @@ export function App() {
           }}
         >
           <AttributionControl position="top-right" compact />
+          <Source
+            id="walk-route"
+            type="geojson"
+            data={walkRouteGeoJSON || emptyGeoJSON}
+          >
+            {/* <Layer id="walk-route" type="line" {...mapStyles.walkRoute} /> */}
+            <Layer
+              id="walk-route"
+              type="symbol"
+              {...mapStyles.walkRoute2}
+              beforeId={mapTextLayerID}
+            />
+          </Source>
+          <Marker
+            anchor="bottom"
+            draggable={!markerPinned}
+            longitude={destinationMarker?.lng || 0}
+            latitude={destinationMarker?.lat || 0}
+            onDragEnd={(e) => {
+              const { lngLat } = e;
+              setDestinationMarker(lngLat);
+            }}
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+              setMarkerSheetOpen(true);
+            }}
+          >
+            <img src={pinImgURL} width="18" hidden={!destinationMarker} />
+          </Marker>
           <Suspense>
             <GeocoderControl
               accessToken={MAPBOX_ACCESS_TOKEN}
@@ -343,11 +372,6 @@ export function App() {
               position="top-left"
             />
           </Suspense>
-          <NavigationControl
-            showZoom={false}
-            visualizePitch
-            position="top-right"
-          />
           <GeolocateControl
             ref={geolocateControlRef}
             fitBoundsOptions={{
@@ -359,7 +383,7 @@ export function App() {
             }}
             trackUserLocation
             showUserHeading
-            position="top-right"
+            position="bottom-right"
             onGeolocate={(e) => {
               console.log({ onGeolocate: e });
               const { coords } = e;
@@ -393,35 +417,58 @@ export function App() {
               setGeolocationGeoJSON(null);
             }}
           />
-          <Source
-            id="walk-route"
-            type="geojson"
-            data={walkRouteGeoJSON || emptyGeoJSON}
-          >
-            {/* <Layer id="walk-route" type="line" {...mapStyles.walkRoute} /> */}
-            <Layer
-              id="walk-route"
-              type="symbol"
-              {...mapStyles.walkRoute2}
-              beforeId={mapTextLayerID}
-            />
-          </Source>
-          <Marker
-            anchor="bottom"
-            draggable={!markerPinned}
-            longitude={destinationMarker?.lng || 0}
-            latitude={destinationMarker?.lat || 0}
-            onDragEnd={(e) => {
-              const { lngLat } = e;
-              setDestinationMarker(lngLat);
-            }}
-            onClick={(e) => {
-              e.originalEvent.stopPropagation();
-              setMarkerSheetOpen(true);
-            }}
-          >
-            <img src={pinImgURL} width="18" hidden={!destinationMarker} />
-          </Marker>
+          <NavigationControl
+            showZoom={false}
+            visualizePitch
+            position="bottom-right"
+          />
+          <div id="actions">
+            {loading && <div class="loading" />}
+            <button
+              type="button"
+              onClick={() => {
+                setAboutSheetOpen(true);
+              }}
+              title="About"
+            >
+              <svg height="24" viewBox="0 0 24 24" width="24">
+                <path
+                  fill="currentColor"
+                  d="m11 7h2v2h-2zm0 4h2v6h-2zm1-9c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setLegendSheetOpen(true);
+              }}
+              title="Legend"
+            >
+              <svg height="24" viewBox="0 0 24 24" width="24">
+                <path
+                  fill="currentColor"
+                  d="m11 7h6v2h-6zm0 4h6v2h-6zm0 4h6v2h-6zm-4-8h2v2h-2zm0 4h2v2h-2zm0 4h2v2h-2zm13.1-12h-16.2c-.5 0-.9.4-.9.9v16.2c0 .4.4.9.9.9h16.2c.4 0 .9-.5.9-.9v-16.2c0-.5-.5-.9-.9-.9zm-1.1 16h-14v-14h14z"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="bold"
+              onClick={() => {
+                setMarkerSheetOpen(true);
+              }}
+              title="Actions"
+              disabled={loading}
+            >
+              <svg height="24" viewBox="0 0 24 24" width="24">
+                <path
+                  fill="currentColor"
+                  d="m3 3v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4zm4-16v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4z"
+                />
+              </svg>
+            </button>
+          </div>
         </Map>
       </div>
       <div id="overview-map" ref={overviewMapDivRef} hidden>
@@ -505,53 +552,6 @@ export function App() {
               />
             </svg>
           )}
-        </button>
-      </div>
-      <div id="actions">
-        {loading && <div class="loading" />}
-        <button
-          type="button"
-          onClick={() => {
-            setAboutSheetOpen(true);
-          }}
-          title="About"
-        >
-          <svg height="24" viewBox="0 0 24 24" width="24">
-            <path
-              fill="currentColor"
-              d="m11 7h2v2h-2zm0 4h2v6h-2zm1-9c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
-            />
-          </svg>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setLegendSheetOpen(true);
-          }}
-          title="Legend"
-        >
-          <svg height="24" viewBox="0 0 24 24" width="24">
-            <path
-              fill="currentColor"
-              d="m11 7h6v2h-6zm0 4h6v2h-6zm0 4h6v2h-6zm-4-8h2v2h-2zm0 4h2v2h-2zm0 4h2v2h-2zm13.1-12h-16.2c-.5 0-.9.4-.9.9v16.2c0 .4.4.9.9.9h16.2c.4 0 .9-.5.9-.9v-16.2c0-.5-.5-.9-.9-.9zm-1.1 16h-14v-14h14z"
-            />
-          </svg>
-        </button>
-        <button
-          type="button"
-          class="bold"
-          onClick={() => {
-            setMarkerSheetOpen(true);
-          }}
-          title="Actions"
-          disabled={loading}
-        >
-          <svg height="24" viewBox="0 0 24 24" width="24">
-            <path
-              fill="currentColor"
-              d="m3 3v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4zm4-16v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4z"
-            />
-          </svg>
         </button>
       </div>
       <div class="bd" onClick={(e) => e.stopPropagation()} hidden={!sheetOpen}>

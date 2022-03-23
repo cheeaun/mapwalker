@@ -87,7 +87,7 @@ button {
 }
 
 #actions {
-  position: fixed;
+  position: absolute;
   bottom: 10px;
   right: 10px;
   display: flex;
@@ -97,13 +97,6 @@ button {
   border-radius: 6px;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
   gap: 1px;
-  margin-bottom: env(safe-area-inset-bottom);
-  margin-right: env(safe-area-inset-right);
-}
-.split-view #actions {
-  bottom: calc(40vh + 10px);
-  bottom: calc(40dvh + 10px);
-  margin-bottom: 0;
 }
 
 #actions .loading {
@@ -347,6 +340,9 @@ button {
 .split-view #overview-map.faded .mapboxgl-canvas-container {
   opacity: 1;
 }
+.split-view #overview-map canvas {
+  border-radius: 0;
+}
 
 .insignificant {
   opacity: 0.6;
@@ -355,4 +351,8 @@ button {
 .mapboxgl-user-location-accuracy-circle {
   transition-property: width, height;
   transition-duration: 0.3s;
+}
+
+.mapboxgl-ctrl-bottom-right {
+  bottom: 170px;
 }
