@@ -8,6 +8,11 @@ body {
     Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
+body {
+  color: #111;
+  background-color: #eae8e6;
+}
+
 *,
 *:after,
 *:before {
@@ -372,7 +377,7 @@ button {
 @media (prefers-color-scheme: dark) {
   body {
     color: #eee;
-    background-color: #333;
+    background-color: #32312f;
   }
   [data-rsbs-overlay] {
     background-color: #333;
