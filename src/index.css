@@ -386,6 +386,48 @@ button {
   opacity: 0.8;
 }
 
+.marker-pointer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 30px;
+  margin-left: -2.5px;
+  background-color: orangered;
+  transform-origin: top center;
+  filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 6px #fff)
+    drop-shadow(0 0 6px #fff) drop-shadow(0 0 6px #fff);
+  opacity: 1;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 100;
+}
+.marker-pointer.mini {
+  width: 3px;
+  height: 15px;
+}
+.marker-pointer:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 11px 11px 11px;
+  border-color: transparent transparent orangered transparent;
+  transform: translate(-8.5px, -3px);
+}
+.marker-pointer.mini:after {
+  border-width: 0 8px 8px 8px;
+  border-color: transparent transparent orangered transparent;
+  transform: translate(-6px, -4px);
+}
+.marker-pointer[hidden] {
+  display: block;
+  opacity: 0;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     color: #eee;
@@ -444,5 +486,9 @@ button {
   }
   .split-view #overview-map {
     border-top-color: rgba(255, 255, 255, 0.3);
+  }
+  .marker-pointer {
+    filter: drop-shadow(0 0 6px #000) drop-shadow(0 0 6px #000)
+      drop-shadow(0 0 6px #000);
   }
 }

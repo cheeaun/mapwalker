@@ -32,6 +32,7 @@ import iconImgURL from '../assets/icon-192.png';
 const { VITE_MAPBOX_ACCESS_TOKEN: MAPBOX_ACCESS_TOKEN, DEV } = import.meta.env;
 
 const OVERVIEW_ZOOM_BACK = 2;
+const POINTER_PADDING = 10;
 
 const MAPSTYLE = `mapbox://styles/cheeaun/cl0ds1jbz003014px6nthvdle${
   DEV ? '/draft' : ''
@@ -124,6 +125,7 @@ function requestOrientation(fn = () => {}) {
 const GeocoderControl = lazy(() => import('./geocoder-control'));
 
 export function App() {
+  const mapDivRef = useRef();
   const mapRef = useRef();
   const overviewMapDivRef = useRef();
   const overviewMapRef = useRef();
@@ -234,9 +236,12 @@ export function App() {
     }
   }, [geolocationGeoJSON]);
 
+  const markerPointerRef = useRef();
+  const markerPointerMiniRef = useRef();
+
   return (
     <div class={`${overviewMapExpanded ? 'split-view' : ''}`}>
-      <div id="map">
+      <div id="map" ref={mapDivRef}>
         <Map
           ref={mapRef}
           mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
@@ -304,6 +309,47 @@ export function App() {
                 center: [viewState.longitude, viewState.latitude],
                 zoom: viewState.zoom - OVERVIEW_ZOOM_BACK,
               });
+            }
+
+            if (destinationMarker && markerPointerRef.current) {
+              const { width, height } =
+                mapDivRef.current.getBoundingClientRect();
+
+              const { lng, lat } = destinationMarker;
+              const { x, y } = mapRef.current.project([lng, lat]);
+              const constrainedX = Math.max(
+                Math.min(x, width - POINTER_PADDING),
+                POINTER_PADDING,
+              );
+              const constrainedY = Math.max(
+                Math.min(y, height - POINTER_PADDING),
+                POINTER_PADDING,
+              );
+
+              // center point of map
+              const centerX = width / 2;
+              const centerY = height / 2;
+
+              // bearing in degrees, from center to destination
+              const bearingRadians = Math.atan2(
+                constrainedY - centerY,
+                constrainedX - centerX,
+              );
+              const bearingDegrees = (bearingRadians * 180) / Math.PI;
+
+              if (
+                constrainedX < x + POINTER_PADDING &&
+                constrainedX > x - POINTER_PADDING &&
+                constrainedY < y + POINTER_PADDING &&
+                constrainedY > y - POINTER_PADDING
+              ) {
+                markerPointerRef.current.hidden = true;
+              } else {
+                markerPointerRef.current.hidden = false;
+                markerPointerRef.current.style.transform = `translate(${constrainedX}px, ${constrainedY}px) rotate(${
+                  bearingDegrees + 90
+                }deg)`;
+              }
             }
           }}
           onClick={(e) => {
@@ -422,6 +468,7 @@ export function App() {
             visualizePitch
             position="bottom-right"
           />
+          <div class="marker-pointer" ref={markerPointerRef} />
           <div id="actions">
             {loading && <div class="loading" />}
             <button
@@ -487,6 +534,48 @@ export function App() {
           onClick={() => {
             requestOrientationTriggerGeolocation();
           }}
+          onMove={() => {
+            if (destinationMarker && markerPointerMiniRef.current) {
+              const { width, height } =
+                overviewMapDivRef.current.getBoundingClientRect();
+
+              const { lng, lat } = destinationMarker;
+              const { x, y } = overviewMapRef.current.project([lng, lat]);
+              const constrainedX = Math.max(
+                Math.min(x, width - POINTER_PADDING),
+                POINTER_PADDING,
+              );
+              const constrainedY = Math.max(
+                Math.min(y, height - POINTER_PADDING),
+                POINTER_PADDING,
+              );
+
+              // center point of map
+              const centerX = width / 2;
+              const centerY = height / 2;
+
+              // bearing in degrees, from center to destination
+              const bearingRadians = Math.atan2(
+                constrainedY - centerY,
+                constrainedX - centerX,
+              );
+              const bearingDegrees = (bearingRadians * 180) / Math.PI;
+
+              if (
+                constrainedX < x + POINTER_PADDING &&
+                constrainedX > x - POINTER_PADDING &&
+                constrainedY < y + POINTER_PADDING &&
+                constrainedY > y - POINTER_PADDING
+              ) {
+                markerPointerMiniRef.current.hidden = true;
+              } else {
+                markerPointerMiniRef.current.hidden = false;
+                markerPointerMiniRef.current.style.transform = `translate(${constrainedX}px, ${constrainedY}px) rotate(${
+                  bearingDegrees + 90
+                }deg)`;
+              }
+            }
+          }}
         >
           <Source
             id="walk-route"
@@ -519,6 +608,7 @@ export function App() {
           >
             <img src={pinImgURL} width="12" hidden={!destinationMarker} />
           </Marker>
+          <div class="marker-pointer mini" ref={markerPointerMiniRef} />
         </Map>
         <button
           type="button"
