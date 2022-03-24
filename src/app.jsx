@@ -501,28 +501,17 @@ export function App() {
               beforeId={mapTextLayerID}
             />
           </Source>
-          <Source id="geolocation" type="geojson" data={geolocationGeoJSON}>
-            <Layer
-              id="geolocation-outer"
-              type="circle"
-              paint={{
-                'circle-radius': 16,
-                'circle-color': '#1ea1f1',
-                'circle-opacity': 0.2,
-              }}
-              beforeId={mapTextLayerID}
-            />
-            <Layer
-              id="geolocation-inner"
-              type="circle"
-              paint={{
-                'circle-radius': 3,
-                'circle-color': '#1ea1f1',
-                'circle-stroke-width': 2,
-                'circle-stroke-color': '#fff',
-              }}
-            />
-          </Source>
+          <Marker
+            anchor="center"
+            longitude={
+              geolocationGeoJSON?.features[0]?.geometry?.coordinates[0] || 0
+            }
+            latitude={
+              geolocationGeoJSON?.features[0]?.geometry?.coordinates[1] || 0
+            }
+          >
+            <div id="geolocation-marker" hidden={!geolocationGeoJSON} />
+          </Marker>
           <Marker
             anchor="bottom"
             longitude={destinationMarker?.lng || 0}

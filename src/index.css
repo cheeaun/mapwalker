@@ -374,6 +374,18 @@ button {
   bottom: 170px;
 }
 
+#geolocation-marker {
+  pointer-events: none;
+  overflow: hidden;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #1ea1f1;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 12px #1ea1f155;
+  opacity: 0.8;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     color: #eee;
