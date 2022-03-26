@@ -18,6 +18,7 @@ import Map, {
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import prettyMetric from 'pretty-metric';
+import prettyImperial from 'pretty-imperial';
 import humanizeDuration from 'humanize-duration';
 import haversine from 'haversine-distance';
 import { useRect } from '@reach/rect';
@@ -94,18 +95,6 @@ const mapStyles = {
     },
   },
 };
-
-function routeInfoText(distance) {
-  // Walking speed: 1.33m per second
-  const timeDurationSecs = (distance / 1.33) * 1000;
-  return `${prettyMetric(distance).humanize()} (${humanizeDuration(
-    timeDurationSecs,
-    {
-      units: ['h', 'm'],
-      round: true,
-    },
-  )})`;
-}
 
 let orientationGranted = false;
 function requestOrientation(fn = () => {}) {
@@ -386,6 +375,41 @@ export function App() {
       LS.del('theme');
     }
   }, [theme]);
+
+  const [unitSystem, setUnitSystem] = useState(
+    LS.get('unit-system') || 'metric',
+  );
+  useEffect(() => {
+    if (unitSystem === 'imperial') {
+      LS.set('unit-system', unitSystem);
+    } else {
+      LS.del('unit-system');
+    }
+  }, [unitSystem]);
+  const prettyUnit = useCallback(
+    (d) => {
+      // d = number in meters
+      if (unitSystem === 'imperial') {
+        // convert meter to miles
+        const miles = d / 1609.34;
+        return prettyImperial(miles).input('mi').humanize();
+      }
+      return prettyMetric(d).humanize();
+    },
+    [unitSystem],
+  );
+
+  const routeInfoText = useCallback(
+    (distance) => {
+      // Walking speed: 1.33m per second
+      const timeDurationSecs = (distance / 1.33) * 1000;
+      return `${prettyUnit(distance)} (${humanizeDuration(timeDurationSecs, {
+        units: ['h', 'm'],
+        round: true,
+      })})`;
+    },
+    [prettyUnit],
+  );
 
   return (
     <div class={`${overviewMapExpanded ? 'split-view' : ''}`}>
@@ -878,6 +902,21 @@ export function App() {
                 </select>
               </label>
             </p>
+            <p>
+              <label>
+                Unit system:{' '}
+                <select
+                  id="unit-system-switcher"
+                  value={unitSystem}
+                  onChange={(e) => {
+                    setUnitSystem(e.target.value);
+                  }}
+                >
+                  <option value="metric">Metric</option>
+                  <option value="imperial">Imperial</option>
+                </select>
+              </label>
+            </p>
           </div>
         </BottomSheet>
         <BottomSheet
@@ -893,8 +932,7 @@ export function App() {
                 class="insignificant"
                 style={{ width: '100%', textAlign: 'center' }}
               >
-                Air distance to marker:{' '}
-                {prettyMetric(airDistanceToMarker).humanize()}
+                Air distance to marker: {prettyUnit(airDistanceToMarker)}
               </div>
             )}
             {!!destinationMarker ? (

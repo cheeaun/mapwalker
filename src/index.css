@@ -428,6 +428,23 @@ select {
   opacity: 0;
 }
 
+.options-sheet-container label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em;
+  background-color: #eee;
+  border-radius: 12px;
+}
+
+.options-sheet-container label select {
+  border: 0;
+  background-color: transparent;
+  appearance: none;
+  color: #0e90df;
+  font-weight: bold;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     color: #eee;
@@ -490,5 +507,8 @@ select {
   .marker-pointer {
     filter: drop-shadow(0 0 6px #000) drop-shadow(0 0 6px #000)
       drop-shadow(0 0 6px #000);
+  }
+  .options-sheet-container label {
+    background-color: #444;
   }
 }
