@@ -23,11 +23,16 @@ a {
   color: #0e90df;
 }
 
-button {
+button,
+select {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
   user-select: none;
+}
+
+select {
+  padding: 0.2em;
 }
 
 .mapboxgl-canvas {
@@ -366,7 +371,7 @@ button {
 }
 
 .mapboxgl-ctrl-bottom-right {
-  bottom: 170px;
+  bottom: 222px;
 }
 
 #geolocation-marker {
