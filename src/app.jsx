@@ -20,6 +20,7 @@ import { BottomSheet } from 'react-spring-bottom-sheet';
 import prettyMetric from 'pretty-metric';
 import humanizeDuration from 'humanize-duration';
 import haversine from 'haversine-distance';
+import { useRect } from '@reach/rect';
 
 import { fetchRoutes } from './apis';
 import LS from './ls';
@@ -123,6 +124,11 @@ function requestOrientation(fn = () => {}) {
 }
 
 const GeocoderControl = lazy(() => import('./geocoder-control'));
+
+function bearingDegrees(x1, y1, x2, y2) {
+  const radians = Math.atan2(y2 - y1, x2 - x1);
+  return (radians * 180) / Math.PI;
+}
 
 export function App() {
   const mapDivRef = useRef();
@@ -239,6 +245,85 @@ export function App() {
   const markerPointerRef = useRef();
   const markerPointerMiniRef = useRef();
 
+  const mapRect = useRect(mapDivRef);
+  const overviewMapRect = useRect(overviewMapDivRef);
+
+  const renderMapArrow = useCallback(() => {
+    if (destinationMarker && markerPointerRef.current) {
+      const { width, height } = mapRect;
+
+      const { lng, lat } = destinationMarker;
+      const { x, y } = mapRef.current.project([lng, lat]);
+      const constrainedX = Math.max(
+        Math.min(x, width - POINTER_PADDING),
+        POINTER_PADDING,
+      );
+      const constrainedY = Math.max(
+        Math.min(y, height - POINTER_PADDING),
+        POINTER_PADDING,
+      );
+
+      // center point of map
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      // bearing in degrees, from center to destination
+      const bearing = bearingDegrees(centerX, centerY, x, y);
+
+      if (
+        constrainedX < x + POINTER_PADDING &&
+        constrainedX > x - POINTER_PADDING &&
+        constrainedY < y + POINTER_PADDING &&
+        constrainedY > y - POINTER_PADDING
+      ) {
+        markerPointerRef.current.hidden = true;
+      } else {
+        markerPointerRef.current.hidden = false;
+        markerPointerRef.current.style.transform = `translate(${constrainedX}px, ${constrainedY}px) rotate(${
+          bearing + 90
+        }deg)`;
+      }
+    }
+  }, [destinationMarker, mapRect]);
+
+  const renderOverviewMapArrow = useCallback(() => {
+    if (destinationMarker && markerPointerMiniRef.current) {
+      const { width, height } = overviewMapRect;
+
+      const { lng, lat } = destinationMarker;
+      const { x, y } = overviewMapRef.current.project([lng, lat]);
+      const constrainedX = Math.max(
+        Math.min(x, width - POINTER_PADDING),
+        POINTER_PADDING,
+      );
+      const constrainedY = Math.max(
+        Math.min(y, height - POINTER_PADDING),
+        POINTER_PADDING,
+      );
+
+      // center point of map
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      // bearing in degrees, from center to destination
+      const bearing = bearingDegrees(centerX, centerY, x, y);
+
+      if (
+        constrainedX < x + POINTER_PADDING &&
+        constrainedX > x - POINTER_PADDING &&
+        constrainedY < y + POINTER_PADDING &&
+        constrainedY > y - POINTER_PADDING
+      ) {
+        markerPointerMiniRef.current.hidden = true;
+      } else {
+        markerPointerMiniRef.current.hidden = false;
+        markerPointerMiniRef.current.style.transform = `translate(${constrainedX}px, ${constrainedY}px) rotate(${
+          bearing + 90
+        }deg)`;
+      }
+    }
+  }, [destinationMarker, overviewMapRect]);
+
   return (
     <div class={`${overviewMapExpanded ? 'split-view' : ''}`}>
       <div id="map" ref={mapDivRef}>
@@ -298,6 +383,7 @@ export function App() {
             if (overviewMapDivRef.current.hidden) return;
             overviewMapDivRef.current.classList.remove('faded');
             LS.set('view-state', e.viewState);
+            renderMapArrow();
           }}
           onMove={(e) => {
             const { viewState } = e;
@@ -311,43 +397,7 @@ export function App() {
               });
             }
 
-            if (destinationMarker && markerPointerRef.current) {
-              const { width, height } =
-                mapDivRef.current.getBoundingClientRect();
-
-              const { lng, lat } = destinationMarker;
-              const { x, y } = mapRef.current.project([lng, lat]);
-              const constrainedX = Math.max(
-                Math.min(x, width - POINTER_PADDING),
-                POINTER_PADDING,
-              );
-              const constrainedY = Math.max(
-                Math.min(y, height - POINTER_PADDING),
-                POINTER_PADDING,
-              );
-
-              // center point of map
-              const centerX = width / 2;
-              const centerY = height / 2;
-
-              // bearing in degrees, from center to destination
-              const bearingRadians = Math.atan2(y - centerY, x - centerX);
-              const bearingDegrees = (bearingRadians * 180) / Math.PI;
-
-              if (
-                constrainedX < x + POINTER_PADDING &&
-                constrainedX > x - POINTER_PADDING &&
-                constrainedY < y + POINTER_PADDING &&
-                constrainedY > y - POINTER_PADDING
-              ) {
-                markerPointerRef.current.hidden = true;
-              } else {
-                markerPointerRef.current.hidden = false;
-                markerPointerRef.current.style.transform = `translate(${constrainedX}px, ${constrainedY}px) rotate(${
-                  bearingDegrees + 90
-                }deg)`;
-              }
-            }
+            renderMapArrow();
           }}
           onClick={(e) => {
             console.log('map click', e);
@@ -531,45 +581,8 @@ export function App() {
           onClick={() => {
             requestOrientationTriggerGeolocation();
           }}
-          onMove={() => {
-            if (destinationMarker && markerPointerMiniRef.current) {
-              const { width, height } =
-                overviewMapDivRef.current.getBoundingClientRect();
-
-              const { lng, lat } = destinationMarker;
-              const { x, y } = overviewMapRef.current.project([lng, lat]);
-              const constrainedX = Math.max(
-                Math.min(x, width - POINTER_PADDING),
-                POINTER_PADDING,
-              );
-              const constrainedY = Math.max(
-                Math.min(y, height - POINTER_PADDING),
-                POINTER_PADDING,
-              );
-
-              // center point of map
-              const centerX = width / 2;
-              const centerY = height / 2;
-
-              // bearing in degrees, from center to destination
-              const bearingRadians = Math.atan2(y - centerY, x - centerX);
-              const bearingDegrees = (bearingRadians * 180) / Math.PI;
-
-              if (
-                constrainedX < x + POINTER_PADDING &&
-                constrainedX > x - POINTER_PADDING &&
-                constrainedY < y + POINTER_PADDING &&
-                constrainedY > y - POINTER_PADDING
-              ) {
-                markerPointerMiniRef.current.hidden = true;
-              } else {
-                markerPointerMiniRef.current.hidden = false;
-                markerPointerMiniRef.current.style.transform = `translate(${constrainedX}px, ${constrainedY}px) rotate(${
-                  bearingDegrees + 90
-                }deg)`;
-              }
-            }
-          }}
+          onIdle={renderOverviewMapArrow}
+          onMove={renderOverviewMapArrow}
         >
           <Source
             id="walk-route"

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@mapbox/mapbox-gl-geocoder": "mapbox/mapbox-gl-geocoder",
+    "@reach/rect": "~0.16.0",
     "awesome-debounce-promise": "~2.1.0",
     "haversine-distance": "~1.2.1",
     "humanize-duration": "~3.27.1",
