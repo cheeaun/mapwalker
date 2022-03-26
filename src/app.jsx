@@ -284,6 +284,8 @@ export function App() {
           bearing + 90
         }deg)`;
       }
+    } else {
+      markerPointerRef.current.hidden = true;
     }
   }, [destinationMarker, mapRect]);
 
@@ -322,6 +324,8 @@ export function App() {
           bearing + 90
         }deg)`;
       }
+    } else {
+      markerPointerMiniRef.current.hidden = true;
     }
   }, [destinationMarker, overviewMapRect]);
 
