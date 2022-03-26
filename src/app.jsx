@@ -541,7 +541,6 @@ export function App() {
           />
           <div class="marker-pointer" ref={markerPointerRef} />
           <div id="actions">
-            {loading && <div class="loading" />}
             <button
               type="button"
               onClick={() => {
@@ -579,12 +578,16 @@ export function App() {
               title="Actions"
               disabled={loading}
             >
-              <svg height="24" viewBox="0 0 24 24" width="24">
-                <path
-                  fill="currentColor"
-                  d="m3 3v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4zm4-16v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4z"
-                />
-              </svg>
+              {loading ? (
+                <div class="loading" />
+              ) : (
+                <svg height="24" viewBox="0 0 24 24" width="24">
+                  <path
+                    fill="currentColor"
+                    d="m3 3v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4zm4-16v8h8v-8zm6 6h-4v-4h4zm-6 4v8h8v-8zm6 6h-4v-4h4z"
+                  />
+                </svg>
+              )}
             </button>
           </div>
         </Map>
