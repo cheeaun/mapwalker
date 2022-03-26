@@ -331,7 +331,10 @@ export function App() {
 
   const geolocateState = useRef(null);
   const setGeolocateActiveLock = useCallback(() => {
-    if (geolocateState.current !== 'ACTIVE_LOCK') {
+    if (
+      geolocateState.current !== 'ACTIVE_LOCK' ||
+      !document.querySelector('.mapboxgl-ctrl-geolocate-active')
+    ) {
       geolocateControlRef.current?.trigger();
     }
   }, []);
