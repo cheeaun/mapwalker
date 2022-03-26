@@ -344,6 +344,19 @@ export function App() {
     }
   });
 
+  const zoomWholeRoute = useCallback((routeGeoJSON) => {
+    if (!routeGeoJSON) return;
+    const bounds = new mapboxgl.LngLatBounds();
+    routeGeoJSON.features.forEach((feature) => {
+      feature.geometry.coordinates.forEach((coord) => {
+        bounds.extend(coord);
+      });
+    });
+    mapRef.current?.fitBounds(bounds, {
+      padding: 100,
+    });
+  }, []);
+
   return (
     <div class={`${overviewMapExpanded ? 'split-view' : ''}`}>
       <div id="map" ref={mapDivRef}>
@@ -840,15 +853,7 @@ export function App() {
                   <button
                     type="button"
                     onClick={() => {
-                      const bounds = new mapboxgl.LngLatBounds();
-                      walkRouteGeoJSON.features.forEach((feature) => {
-                        feature.geometry.coordinates.forEach((coord) => {
-                          bounds.extend(coord);
-                        });
-                      });
-                      mapRef.current?.fitBounds(bounds, {
-                        padding: 100,
-                      });
+                      zoomWholeRoute(walkRouteGeoJSON);
                       setMarkerSheetOpen(false);
                     }}
                   >
@@ -888,6 +893,7 @@ export function App() {
                     setWalkRouteGeoJSON(results);
                     setLoading(false);
                     setMarkerPinned(true);
+                    zoomWholeRoute(results);
                   }}
                 >
                   <span>🔃</span> Generate walk routes to marker
