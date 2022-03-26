@@ -131,6 +131,14 @@ function bearingDegrees(x1, y1, x2, y2) {
   return (radians * 180) / Math.PI;
 }
 
+function hasHeading() {
+  return document.querySelector('.mapboxgl-user-location-show-heading');
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export function App() {
   const mapDivRef = useRef();
   const mapRef = useRef();
@@ -231,14 +239,14 @@ export function App() {
   }, [destinationMarker, geolocationGeoJSON]);
 
   const requestOrientationTriggerGeolocation = useCallback(() => {
-    if (geolocationGeoJSON) {
-      requestOrientation(() => {
-        // Turn off
-        geolocateControlRef.current?.trigger();
-        // Turn it back on again
-        setTimeout(() => {
+    if (geolocationGeoJSON && !hasHeading()) {
+      requestOrientation(async () => {
+        let times = 0;
+        do {
+          if (times++ > 10) break; // Prevent infinite loop
           geolocateControlRef.current?.trigger();
-        }, 1);
+          await sleep(10);
+        } while (!hasHeading());
       });
     }
   }, [geolocationGeoJSON]);
