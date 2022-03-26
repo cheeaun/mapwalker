@@ -331,10 +331,7 @@ export function App() {
               const centerY = height / 2;
 
               // bearing in degrees, from center to destination
-              const bearingRadians = Math.atan2(
-                constrainedY - centerY,
-                constrainedX - centerX,
-              );
+              const bearingRadians = Math.atan2(y - centerY, x - centerX);
               const bearingDegrees = (bearingRadians * 180) / Math.PI;
 
               if (
@@ -555,10 +552,7 @@ export function App() {
               const centerY = height / 2;
 
               // bearing in degrees, from center to destination
-              const bearingRadians = Math.atan2(
-                constrainedY - centerY,
-                constrainedX - centerX,
-              );
+              const bearingRadians = Math.atan2(y - centerY, x - centerX);
               const bearingDegrees = (bearingRadians * 180) / Math.PI;
 
               if (
