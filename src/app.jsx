@@ -245,7 +245,7 @@ export function App() {
         do {
           if (times++ > 10) break; // Prevent infinite loop
           geolocateControlRef.current?.trigger();
-          await sleep(10);
+          await sleep(100);
         } while (!hasHeading());
       });
     }
