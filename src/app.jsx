@@ -21,6 +21,7 @@ import prettyMetric from 'pretty-metric';
 import humanizeDuration from 'humanize-duration';
 import haversine from 'haversine-distance';
 import { useRect } from '@reach/rect';
+import usePageVisibility from 'use-page-visibility';
 
 import { fetchRoutes } from './apis';
 import LS from './ls';
@@ -205,7 +206,7 @@ export function App() {
     mapRef.current?.resize();
     overviewMapRef.current?.resize();
     if (geolocationGeoJSON) {
-      geolocateControlRef.current?.trigger();
+      setGeolocateActiveLock();
     }
   }, [overviewMapExpanded]);
 
@@ -324,6 +325,18 @@ export function App() {
     }
   }, [destinationMarker, overviewMapRect]);
 
+  const geolocateState = useRef(null);
+  const setGeolocateActiveLock = useCallback(() => {
+    if (geolocateState.current !== 'ACTIVE_LOCK') {
+      geolocateControlRef.current?.trigger();
+    }
+  }, []);
+  usePageVisibility((visible) => {
+    if (visible) {
+      setGeolocateActiveLock();
+    }
+  });
+
   return (
     <div class={`${overviewMapExpanded ? 'split-view' : ''}`}>
       <div id="map" ref={mapDivRef}>
@@ -343,7 +356,7 @@ export function App() {
           logoPosition="top-right"
           keyboard={false}
           onLoad={(e) => {
-            geolocateControlRef.current?.trigger();
+            setGeolocateActiveLock();
 
             const { layers } = mapRef.current.getStyle();
             setMapTextLayerID(
@@ -478,8 +491,12 @@ export function App() {
             showUserHeading
             position="bottom-right"
             onGeolocate={(e) => {
-              console.log({ onGeolocate: e });
-              const { coords } = e;
+              const {
+                target: { _watchState },
+                coords,
+              } = e;
+              console.log(_watchState, { onGeolocate: e });
+              geolocateState.current = _watchState;
               if (coords?.longitude) {
                 setGeolocationGeoJSON({
                   type: 'FeatureCollection',
