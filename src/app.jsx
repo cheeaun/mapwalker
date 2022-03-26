@@ -539,7 +539,7 @@ export function App() {
             visualizePitch
             position="bottom-right"
           />
-          <div class="marker-pointer" ref={markerPointerRef} />
+          <div class="marker-pointer" ref={markerPointerRef} hidden />
           <div id="actions">
             <button
               type="button"
@@ -642,7 +642,7 @@ export function App() {
           >
             <img src={pinImgURL} width="12" hidden={!destinationMarker} />
           </Marker>
-          <div class="marker-pointer mini" ref={markerPointerMiniRef} />
+          <div class="marker-pointer mini" ref={markerPointerMiniRef} hidden />
         </Map>
         <button
           type="button"
