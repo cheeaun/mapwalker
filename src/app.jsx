@@ -420,7 +420,8 @@ export function App() {
           mapStyle={MAPSTYLE}
           initialViewState={
             LS.get('view-state') || {
-              center: [103.8198, 1.3521],
+              longitude: 0,
+              latitude: 0,
             }
           }
           boxZoom={false}
@@ -458,18 +459,30 @@ export function App() {
           }}
           onMoveStart={(e) => {
             if (e.geolocateSource) return;
-            if (overviewMapDivRef.current.hidden) return;
-            overviewMapDivRef.current.classList.add('faded');
+            if (!overviewMapDivRef.current.hidden) {
+              overviewMapDivRef.current.classList.add('faded');
+            }
           }}
           onMoveEnd={(e) => {
             if (e.geolocateSource) return;
-            if (overviewMapDivRef.current.hidden) return;
-            overviewMapDivRef.current.classList.remove('faded');
+            if (!overviewMapDivRef.current.hidden) {
+              overviewMapDivRef.current.classList.remove('faded');
+            }
           }}
           onIdle={(e) => {
-            if (overviewMapDivRef.current.hidden) return;
-            overviewMapDivRef.current.classList.remove('faded');
-            LS.set('view-state', e.viewState);
+            if (!overviewMapDivRef.current.hidden) {
+              overviewMapDivRef.current.classList.remove('faded');
+            }
+            const { target } = e;
+            const center = target.getCenter();
+            const viewState = {
+              longitude: center.lng,
+              latitude: center.lat,
+              zoom: target.getZoom(),
+              bearing: target.getBearing(),
+              pitch: target.getPitch(),
+            };
+            LS.set('view-state', viewState);
             renderMapArrow();
           }}
           onMove={(e) => {
@@ -679,8 +692,8 @@ export function App() {
           mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
           mapStyle={MAPSTYLE}
           initialViewState={{
-            center: [103.8198, 1.3521],
-            zoom: 11,
+            longitude: 0,
+            latitude: 0,
           }}
           attributionControl={false}
           interactive={!overviewMapExpanded}
