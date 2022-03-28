@@ -183,7 +183,10 @@ export function App() {
     const info = {};
     walkRouteGeoJSON?.features?.forEach((feature) => {
       const { provider, distance } = feature.properties;
-      info[provider] = distance;
+      if (!info[provider]) {
+        info[provider] = [];
+      }
+      info[provider].push(distance);
     });
     return info;
   }, [walkRouteGeoJSON]);
@@ -799,7 +802,7 @@ export function App() {
             </p>
             <p>
               Once a marker is placed, walk routes can be generated from current
-              location to the marker. Up to 3 walk routes will be generated from
+              location to the marker. Up to 6 walk routes will be generated from
               different routing engines, overlayed on the map simultaneuously
               for comparison as each has its own pros and cons.
             </p>
@@ -855,43 +858,37 @@ export function App() {
                 <img src={walkDotBlueImgURL} width="10" height="10" />
               </dt>
               <dd>
-                Route from OpenStreetMap
-                {distances['osm-de'] && (
+                Route from OSRM
+                {distances.osrm?.map((dist) => (
                   <>
                     <br />
-                    <span class="insignificant">
-                      {routeInfoText(distances['osm-de'])}
-                    </span>
+                    <span class="insignificant">{routeInfoText(dist)}</span>
                   </>
-                )}
+                ))}
               </dd>
               <dt>
                 <img src={walkDotPurpleImgURL} width="10" height="10" />
               </dt>
               <dd>
                 Route from OpenRouteService
-                {distances.ors && (
+                {distances.ors?.map((dist) => (
                   <>
                     <br />
-                    <span class="insignificant">
-                      {routeInfoText(distances.ors)}
-                    </span>
+                    <span class="insignificant">{routeInfoText(dist)}</span>
                   </>
-                )}
+                ))}
               </dd>
               <dt>
                 <img src={walkDotRedImgURL} width="10" height="10" />
               </dt>
               <dd>
                 Route from GraphHopper
-                {distances.graphhopper && (
+                {distances.graphhopper.map((dist) => (
                   <>
                     <br />
-                    <span class="insignificant">
-                      {routeInfoText(distances.graphhopper)}
-                    </span>
+                    <span class="insignificant">{routeInfoText(dist)}</span>
                   </>
-                )}
+                ))}
               </dd>
             </dl>
           </div>
