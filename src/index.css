@@ -61,8 +61,7 @@ select {
   pointer-events: auto;
 }
 
-.mapboxgl-ctrl-group button,
-.mapboxgl-popup-content {
+#map .mapboxgl-ctrl-group button {
   zoom: 1.5;
 }
 
@@ -99,7 +98,7 @@ select {
   display: block;
   opacity: 0;
 }
-#overview-map .mapboxgl-control-container {
+#overview-map .mapboxgl-ctrl-logo {
   display: none;
 }
 
@@ -168,7 +167,7 @@ select {
   opacity: 1;
 }
 
-#overview-map button {
+#overview-map > button {
   position: absolute;
   z-index: 1;
   top: 5px;
@@ -185,16 +184,16 @@ select {
   pointer-events: auto;
   cursor: pointer;
 }
-.split-view #overview-map button {
+.split-view #overview-map > button {
   top: 10px;
   right: 10px;
   padding: 10px;
 }
-#overview-map button:hover {
+#overview-map > button:hover {
   border-color: #000;
   background-color: rgba(255, 255, 255, 0.5);
 }
-#overview-map button:active {
+#overview-map > button:active {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -332,8 +331,8 @@ select {
 }
 
 .split-view #map {
-  bottom: 40vh;
-  bottom: 40dvh;
+  bottom: 45vh;
+  bottom: 45dvh;
 }
 .split-view #overview-map {
   width: auto;
@@ -342,8 +341,8 @@ select {
   bottom: 0;
   left: 0;
   right: 0;
-  top: 60vh;
-  top: 60dvh;
+  top: 55vh;
+  top: 55dvh;
   border-radius: 0;
   box-shadow: none;
   margin: 0;
@@ -370,7 +369,7 @@ select {
   transition-duration: 0.3s;
 }
 
-.mapboxgl-ctrl-bottom-right {
+#map .mapboxgl-ctrl-bottom-right {
   bottom: 222px;
 }
 
@@ -481,10 +480,10 @@ select {
   #overview-map.faded {
     box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
   }
-  #overview-map button {
+  #overview-map > button {
     background-color: rgba(0, 0, 0, 0.2);
   }
-  #overview-map button:hover {
+  #overview-map > button:hover {
     border-color: #999;
     background-color: rgba(0, 0, 0, 0.5);
   }

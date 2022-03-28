@@ -481,6 +481,7 @@ export function App() {
             if (!overviewMapDivRef.current.hidden) {
               overviewMapDivRef.current.classList.remove('faded');
             }
+
             const { target } = e;
             const center = target.getCenter();
             const viewState = {
@@ -491,7 +492,14 @@ export function App() {
               pitch: target.getPitch(),
             };
             LS.set('view-state', viewState);
+
             renderMapArrow();
+
+            const hideNavControl =
+              viewState.pitch === 0 && viewState.bearing === 0;
+            document.querySelector(
+              '#map .mapboxgl-ctrl-compass',
+            ).style.display = hideNavControl ? 'none' : 'block';
           }}
           onMove={(e) => {
             const { viewState } = e;
@@ -710,9 +718,23 @@ export function App() {
           onClick={() => {
             requestOrientationTriggerGeolocation();
           }}
-          onIdle={renderOverviewMapArrow}
+          onIdle={() => {
+            renderOverviewMapArrow();
+
+            const pitch = overviewMapRef.current.getPitch();
+            const bearing = overviewMapRef.current.getBearing();
+            const hideNavControl = pitch === 0 && bearing === 0;
+            document.querySelector(
+              '#overview-map .mapboxgl-ctrl-compass',
+            ).style.display = hideNavControl ? 'none' : 'block';
+          }}
           onMove={renderOverviewMapArrow}
         >
+          <NavigationControl
+            showZoom={false}
+            visualizePitch
+            position="bottom-right"
+          />
           <Source
             id="walk-route"
             type="geojson"
