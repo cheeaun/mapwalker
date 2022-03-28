@@ -491,11 +491,11 @@ select {
   .loading {
     border-color: #eee;
   }
-  .bottom-sheet-container button {
+  .bottom-sheet-container button:not(.bold) {
     color: #eee;
     background-color: #555;
   }
-  .bottom-sheet-container button:hover {
+  .bottom-sheet-container button:not(.bold):hover {
     background-color: #666;
   }
   :root {
