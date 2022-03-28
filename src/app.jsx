@@ -697,7 +697,7 @@ export function App() {
           }}
           attributionControl={false}
           interactive={!overviewMapExpanded}
-          maxZoom={16}
+          maxZoom={17}
           keyboard={false}
           onClick={() => {
             requestOrientationTriggerGeolocation();
