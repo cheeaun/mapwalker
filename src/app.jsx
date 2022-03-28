@@ -883,7 +883,7 @@ export function App() {
               </dt>
               <dd>
                 Route from GraphHopper
-                {distances.graphhopper.map((dist) => (
+                {distances.graphhopper?.map((dist) => (
                   <>
                     <br />
                     <span class="insignificant">{routeInfoText(dist)}</span>
