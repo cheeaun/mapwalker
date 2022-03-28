@@ -339,6 +339,11 @@ export function App() {
   usePageVisibility((visible) => {
     if (visible) {
       setGeolocateActiveLock();
+      if (geolocationGeoJSON) {
+        overviewMapRef.current?.easeTo({
+          center: geolocationGeoJSON.features[0].geometry.coordinates,
+        });
+      }
     }
   });
 
