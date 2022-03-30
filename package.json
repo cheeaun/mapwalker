@@ -21,9 +21,13 @@
     "use-page-visibility": "~3.0.2"
   },
   "devDependencies": {
+    "@iconify-json/ic": "~1.1.2",
+    "@iconify-json/mdi": "~1.1.6",
     "@preact/preset-vite": "~2.2.0",
+    "@svgr/core": "~6.2.1",
     "autoprefixer": "~10.4.4",
     "postcss-dark-theme-class": "~0.7.3",
+    "unplugin-icons": "~0.14.1",
     "vite": "~2.9.0"
   },
   "postcss": {
