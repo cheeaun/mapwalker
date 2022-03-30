@@ -167,11 +167,16 @@ select {
   opacity: 1;
 }
 
-#overview-map > button {
+#mini-actions {
   position: absolute;
   z-index: 1;
   top: 5px;
   right: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+#mini-actions button {
   border-radius: 999px;
   appearance: none;
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -184,16 +189,18 @@ select {
   pointer-events: auto;
   cursor: pointer;
 }
-.split-view #overview-map > button {
+.split-view #mini-actions {
   top: 10px;
   right: 10px;
+}
+.split-view #mini-actions button {
   padding: 10px;
 }
-#overview-map > button:hover {
+#mini-actions button:hover {
   border-color: #000;
   background-color: rgba(255, 255, 255, 0.5);
 }
-#overview-map > button:active {
+#mini-actions button:active {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -479,10 +486,10 @@ select {
   #overview-map.faded {
     box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
   }
-  #overview-map > button {
+  #mini-actions button {
     background-color: rgba(0, 0, 0, 0.2);
   }
-  #overview-map > button:hover {
+  #mini-actions button:hover {
     border-color: #999;
     background-color: rgba(0, 0, 0, 0.5);
   }

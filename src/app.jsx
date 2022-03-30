@@ -409,6 +409,8 @@ export function App() {
     [prettyUnit],
   );
 
+  const [showMiniLocationButton, setShowMiniLocationButton] = useState(false);
+
   return (
     <div class={`${overviewMapExpanded ? 'split-view' : ''}`}>
       <div id="map" ref={mapDivRef}>
@@ -712,6 +714,13 @@ export function App() {
             document.querySelector(
               '#overview-map .mapboxgl-ctrl-compass',
             ).style.display = hideNavControl ? 'none' : 'block';
+
+            // check  if geolocationGeoJSON is in view
+            const overviewMapBounds = overviewMapRef.current.getBounds();
+            const isInBounds = overviewMapBounds.contains(
+              geolocationGeoJSON?.features[0].geometry.coordinates,
+            );
+            setShowMiniLocationButton(!isInBounds);
           }}
           onMove={renderOverviewMapArrow}
         >
@@ -748,28 +757,47 @@ export function App() {
           </Marker>
           <div class="marker-pointer mini" ref={markerPointerMiniRef} hidden />
         </Map>
-        <button
-          type="button"
-          onClick={() => {
-            setOverviewMapExpanded(!overviewMapExpanded);
-          }}
-        >
-          {overviewMapExpanded ? (
-            <svg height="24" viewBox="0 0 24 24" width="24">
-              <path
-                fill="currentColor"
-                d="m5 16h3v3h2v-5h-5zm3-8h-3v2h5v-5h-2zm6 11h2v-3h3v-2h-5zm2-11v-3h-2v5h5v-2z"
-              />
-            </svg>
-          ) : (
-            <svg height="24" viewBox="0 0 24 24" width="24">
-              <path
-                fill="currentColor"
-                d="m7 14h-2v5h5v-2h-3zm-2-4h2v-3h3v-2h-5zm12 7h-3v2h5v-5h-2zm-3-12v2h3v3h2v-5z"
-              />
-            </svg>
+        <div id="mini-actions">
+          <button
+            type="button"
+            onClick={() => {
+              setOverviewMapExpanded(!overviewMapExpanded);
+            }}
+          >
+            {overviewMapExpanded ? (
+              <svg height="24" viewBox="0 0 24 24" width="24">
+                <path
+                  fill="currentColor"
+                  d="m5 16h3v3h2v-5h-5zm3-8h-3v2h5v-5h-2zm6 11h2v-3h3v-2h-5zm2-11v-3h-2v5h5v-2z"
+                />
+              </svg>
+            ) : (
+              <svg height="24" viewBox="0 0 24 24" width="24">
+                <path
+                  fill="currentColor"
+                  d="m7 14h-2v5h5v-2h-3zm-2-4h2v-3h3v-2h-5zm12 7h-3v2h5v-5h-2zm-3-12v2h3v3h2v-5z"
+                />
+              </svg>
+            )}
+          </button>
+          {overviewMapExpanded && showMiniLocationButton && (
+            <button
+              type="button"
+              onClick={() => {
+                overviewMapRef.current?.easeTo({
+                  center: geolocationGeoJSON.features[0].geometry.coordinates,
+                });
+              }}
+            >
+              <svg height="24" viewBox="0 0 24 24" width="24">
+                <path
+                  fill="currentColor"
+                  d="m12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94v-2.06h-2v2.06c-4.17.46-7.48 3.77-7.94 7.94h-2.06v2h2.06c.46 4.17 3.77 7.48 7.94 7.94v2.06h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94h2.06v-2zm-8.94 8c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"
+                />
+              </svg>
+            </button>
           )}
-        </button>
+        </div>
       </div>
       <div class="bd" onClick={(e) => e.stopPropagation()} hidden={!sheetOpen}>
         <BottomSheet
