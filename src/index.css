@@ -338,8 +338,8 @@ select {
 }
 
 .split-view #map {
-  bottom: 45vh;
-  bottom: 45dvh;
+  bottom: 50vh;
+  bottom: 50dvh;
 }
 .split-view #overview-map {
   width: auto;
@@ -348,8 +348,8 @@ select {
   bottom: 0;
   left: 0;
   right: 0;
-  top: 55vh;
-  top: 55dvh;
+  top: 50vh;
+  top: 50dvh;
   border-radius: 0;
   box-shadow: none;
   margin: 0;
