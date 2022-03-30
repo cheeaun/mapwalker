@@ -380,9 +380,8 @@ select {
   height: 10px;
   border-radius: 50%;
   background-color: #1ea1f1;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 12px #1ea1f155;
-  opacity: 0.8;
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 0 0 12px #1ea1f144;
 }
 
 .marker-pointer {
