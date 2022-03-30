@@ -69,21 +69,11 @@ const mapStyles = {
   walkRoute2: {
     layout: {
       'symbol-placement': 'line',
-      'symbol-spacing': [
-        'interpolate',
-        ['linear'],
-        ['zoom'],
-        10,
-        1,
-        15,
-        16,
-        19,
-        32,
-      ],
-      'icon-allow-overlap': true,
+      'symbol-spacing': ['interpolate', ['linear'], ['zoom'], 15, 1, 19, 56],
+      // 'icon-allow-overlap': true,
       // 'icon-ignore-placement': true,
       'icon-padding': 0,
-      'icon-size': ['interpolate', ['linear'], ['zoom'], 15, 0.4, 18, 0.75],
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 15, 0.5, 18, 1],
       'icon-image': [
         'case',
         ['==', ['get', 'provider'], 'ors'],
@@ -549,12 +539,7 @@ export function App() {
             data={walkRouteGeoJSON || emptyGeoJSON}
           >
             {/* <Layer id="walk-route" type="line" {...mapStyles.walkRoute} /> */}
-            <Layer
-              id="walk-route"
-              type="symbol"
-              {...mapStyles.walkRoute2}
-              beforeId={mapTextLayerID}
-            />
+            <Layer id="walk-route" type="symbol" {...mapStyles.walkRoute2} />
           </Source>
           <Marker
             anchor="bottom"
@@ -741,12 +726,7 @@ export function App() {
             data={walkRouteGeoJSON || emptyGeoJSON}
           >
             {/* <Layer id="walk-route" type="line" {...mapStyles.walkRoute} /> */}
-            <Layer
-              id="walk-route"
-              type="symbol"
-              {...mapStyles.walkRoute2}
-              beforeId={mapTextLayerID}
-            />
+            <Layer id="walk-route" type="symbol" {...mapStyles.walkRoute2} />
           </Source>
           <Marker
             anchor="center"

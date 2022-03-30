@@ -22,7 +22,7 @@ export const fetchRoutes = async (origin, destination, params) => {
         overview: 'full',
         continue_straight: false,
         generate_hints: false,
-        alternatives: 2,
+        alternatives: 1,
         ...params,
       }),
   )
@@ -75,34 +75,34 @@ export const fetchRoutes = async (origin, destination, params) => {
   const results = {
     type: 'FeatureCollection',
     features: [
-      ...response1?.routes.map((route) => {
+      ...response1?.routes.map((route, index) => {
         return {
           type: 'Feature',
           geometry: route?.geometry,
           properties: {
-            index: 0,
+            index,
             provider: 'osrm',
             distance: route?.distance,
           },
         };
       }),
-      ...response2?.features.map((feature) => {
+      ...response2?.features.map((feature, index) => {
         return {
           type: 'Feature',
           geometry: feature?.geometry,
           properties: {
-            index: 1,
+            index,
             provider: 'ors',
             distance: feature?.properties?.summary?.distance,
           },
         };
       }),
-      ...response3?.paths.map((path) => {
+      ...response3?.paths.map((path, index) => {
         return {
           type: 'Feature',
           geometry: path?.points,
           properties: {
-            index: 2,
+            index,
             provider: 'graphhopper',
             distance: path?.distance,
           },
