@@ -1110,7 +1110,10 @@ export function App() {
                         setWalkRouteGeoJSON(backupWalkRouteGeoJSON.current);
                       }}
                     >
-                      <span>♻️</span> Restore route
+                      <span>
+                        <IconRestore />
+                      </span>{' '}
+                      Restore route
                     </button>
                   )
                 )}
