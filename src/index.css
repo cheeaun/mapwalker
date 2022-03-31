@@ -260,7 +260,7 @@ select {
   align-items: center;
   display: grid;
   grid-template-columns: 1.5em 1fr;
-  gap: 0.5em;
+  gap: 1em;
 }
 .bottom-sheet-container button.block {
   width: 100%;
@@ -450,6 +450,30 @@ select {
   font-weight: bold;
 }
 
+.mapboxgl-popup {
+  font-size: initial;
+  filter: drop-shadow(0 0 32px rgba(0, 0, 0, 0.3));
+}
+.mapboxgl-popup-content {
+  padding: 1em;
+  box-shadow: none;
+  border-radius: 24px;
+}
+.mapboxgl-popup button:not(.mapboxgl-popup-close-button) {
+  display: block;
+  width: 100%;
+  padding: 1em;
+  border: 0;
+  margin: 0;
+  color: #333;
+  background-color: #eee;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.mapboxgl-popup button:not(.mapboxgl-popup-close-button):hover {
+  background-color: #ddd;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     color: #eee;
@@ -508,6 +532,7 @@ select {
   }
   .split-view #overview-map {
     border-top-color: rgba(255, 255, 255, 0.3);
+    box-shadow: none;
   }
   .marker-pointer {
     filter: drop-shadow(0 0 6px #000) drop-shadow(0 0 6px #000)
@@ -515,5 +540,21 @@ select {
   }
   .options-sheet-container label {
     background-color: #444;
+  }
+  .mapboxgl-popup {
+    filter: drop-shadow(0 0 32px rgba(255, 255, 255, 0.3));
+  }
+  .mapboxgl-popup-content {
+    background-color: #333;
+  }
+  .mapboxgl-popup-tip {
+    border-top-color: #333;
+  }
+  .mapboxgl-popup button:not(.mapboxgl-popup-close-button) {
+    color: #eee;
+    background-color: #555;
+  }
+  .mapboxgl-popup button:not(.mapboxgl-popup-close-button):hover {
+    background-color: #666;
   }
 }

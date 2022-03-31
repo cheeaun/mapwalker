@@ -14,6 +14,7 @@ import Map, {
   Marker,
   NavigationControl,
   Source,
+  Popup,
 } from 'react-map-gl';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import { BottomSheet } from 'react-spring-bottom-sheet';
@@ -38,6 +39,8 @@ import IconLegend from '~icons/mdi/help-circle-outline';
 import IconOptions from '~icons/mdi/cog-outline';
 import IconActions from '~icons/mdi/view-grid-outline';
 import IconExpand from '~icons/mdi/fullscreen';
+import IconRestore from '~icons/mdi/backup-restore';
+import IconGPS from '~icons/mdi/crosshairs-gps';
 import IconCollapse from '~icons/mdi/fullscreen-exit';
 import IconRemove from '~icons/mdi/close-box-outline';
 import IconFit from '~icons/mdi/fit-to-screen-outline';
@@ -139,7 +142,7 @@ export function App() {
   const [loading, setLoading] = useState(false);
 
   const geolocateControlRef = useRef();
-  const [geolocationGeoJSON, setGeolocationGeoJSON] = useState(emptyGeoJSON);
+  const [geolocationGeoJSON, setGeolocationGeoJSON] = useState(null);
 
   const [walkRouteGeoJSON, setWalkRouteGeoJSON] = useState(
     LS.get('walk-route') || null,
@@ -155,18 +158,23 @@ export function App() {
     LS.set('destination-marker', destinationMarker);
   }, [destinationMarker]);
 
-  const [markerPinned, setMarkerPinned] = useState(
-    LS.get('marker-pinned') || false,
-  );
-  useEffect(() => {
-    LS.set('marker-pinned', markerPinned);
-  }, [markerPinned]);
-
+  const [showPopup, setShowPopup] = useState(false);
   const clickFired = useRef(false);
   const mapHandleClick = (e) => {
-    if (clickFired.current && !markerPinned) {
-      const { lngLat } = e;
-      setDestinationMarker(lngLat);
+    if (clickFired.current) {
+      if (destinationMarker) {
+        if (showPopup) {
+          setShowPopup(false);
+        } else {
+          setShowPopup({
+            lng: e.lngLat.lng,
+            lat: e.lngLat.lat,
+          });
+        }
+      } else {
+        const { lngLat } = e;
+        setDestinationMarker(lngLat);
+      }
     }
   };
   const mapHandleClickDebounced = AwesomeDebouncePromise(mapHandleClick, 350);
@@ -217,7 +225,7 @@ export function App() {
   const markerSheetInitialFocusRef = useRef();
 
   const airDistanceToMarker = useMemo(() => {
-    if (!destinationMarker || !geolocationGeoJSON?.features?.length) return 0;
+    if (!destinationMarker || !geolocationGeoJSON) return 0;
     const { lng, lat } = destinationMarker;
     const [originLng, originLat] =
       geolocationGeoJSON.features[0].geometry.coordinates;
@@ -557,13 +565,8 @@ export function App() {
           </Source>
           <Marker
             anchor="bottom"
-            draggable={!markerPinned}
             longitude={destinationMarker?.lng || 0}
             latitude={destinationMarker?.lat || 0}
-            onDragEnd={(e) => {
-              const { lngLat } = e;
-              setDestinationMarker(lngLat);
-            }}
             onClick={(e) => {
               e.originalEvent.stopPropagation();
               setMarkerSheetOpen(true);
@@ -635,6 +638,30 @@ export function App() {
             position="bottom-right"
           />
           <div class="marker-pointer" ref={markerPointerRef} hidden />
+          {showPopup && (
+            <Popup
+              anchor="bottom"
+              longitude={showPopup.lng}
+              latitude={showPopup.lat}
+              closeButton={false}
+              closeOnMove
+              onClose={() => setShowPopup(false)}
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  backupDestinationMarker.current = destinationMarker;
+                  setDestinationMarker({
+                    lng: showPopup.lng,
+                    lat: showPopup.lat,
+                  });
+                  setShowPopup(false);
+                }}
+              >
+                Move marker here
+              </button>
+            </Popup>
+          )}
           <div id="actions">
             <button
               type="button"
@@ -756,7 +783,7 @@ export function App() {
           >
             {overviewMapExpanded ? <IconCollapse /> : <IconExpand />}
           </button>
-          {overviewMapExpanded && showMiniLocationButton && (
+          {overviewMapExpanded && showMiniLocationButton && geolocationGeoJSON && (
             <button
               type="button"
               onClick={() => {
@@ -765,12 +792,7 @@ export function App() {
                 });
               }}
             >
-              <svg height="24" viewBox="0 0 24 24" width="24">
-                <path
-                  fill="currentColor"
-                  d="m12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94v-2.06h-2v2.06c-4.17.46-7.48 3.77-7.94 7.94h-2.06v2h2.06c.46 4.17 3.77 7.48 7.94 7.94v2.06h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94h2.06v-2zm-8.94 8c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"
-                />
-              </svg>
+              <IconGPS />
             </button>
           )}
         </div>
@@ -959,6 +981,22 @@ export function App() {
                 Air distance to marker: {prettyUnit(airDistanceToMarker)}
               </div>
             )}
+            {backupDestinationMarker.current &&
+              (destinationMarker?.lng !== backupDestinationMarker.current.lng ||
+                destinationMarker?.lat !==
+                  backupDestinationMarker.current.lat) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDestinationMarker(backupDestinationMarker.current);
+                  }}
+                >
+                  <span>
+                    <IconRestore />
+                  </span>{' '}
+                  Restore marker
+                </button>
+              )}
             {!!destinationMarker ? (
               <>
                 <button
@@ -966,23 +1004,12 @@ export function App() {
                   onClick={() => {
                     setDestinationMarker(null);
                     backupDestinationMarker.current = destinationMarker;
-                    setMarkerPinned(false);
                   }}
                 >
                   <span>
                     <IconRemove />
                   </span>{' '}
                   Remove marker
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMarkerPinned(!markerPinned);
-                    setMarkerSheetOpen(false);
-                  }}
-                  class={markerPinned ? '' : 'faded'}
-                >
-                  <span>📌</span> {markerPinned ? 'Unpin marker' : 'Pin marker'}
                 </button>
                 {!!walkRouteGeoJSON && (
                   <button
@@ -1033,7 +1060,6 @@ export function App() {
                     );
                     setWalkRouteGeoJSON(results);
                     setLoading(false);
-                    setMarkerPinned(true);
                     zoomWholeRoute(results);
                   }}
                 >
@@ -1058,16 +1084,6 @@ export function App() {
                     }}
                   >
                     <span>📌</span> Place marker on map
-                  </button>
-                )}
-                {!destinationMarker && backupDestinationMarker.current && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDestinationMarker(backupDestinationMarker.current);
-                    }}
-                  >
-                    <span>♻️</span> Restore marker
                   </button>
                 )}
                 {!!walkRouteGeoJSON ? (
