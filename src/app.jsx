@@ -205,7 +205,12 @@ export function App() {
 
   const [sheetOpen, setSheetOpen] = useState(false);
   useEffect(() => {
-    if (aboutSheetOpen || markerSheetOpen || legendSheetOpen) {
+    if (
+      aboutSheetOpen ||
+      markerSheetOpen ||
+      legendSheetOpen ||
+      optionsSheetOpen
+    ) {
       setSheetOpen(true);
     } else if (sheetOpen) {
       setTimeout(() => {
