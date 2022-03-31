@@ -46,6 +46,8 @@ import IconRemove from '~icons/mdi/close-box-outline';
 import IconFit from '~icons/mdi/fit-to-screen-outline';
 import IconFly from '~icons/mdi/ufo-outline';
 import IconRoutes from '~icons/mdi/routes';
+import IconTheme from '~icons/mdi/theme-light-dark';
+import IconUnit from '~icons/mdi/power-socket-us';
 
 const { VITE_MAPBOX_ACCESS_TOKEN: MAPBOX_ACCESS_TOKEN, DEV } = import.meta.env;
 
@@ -934,7 +936,9 @@ export function App() {
             <h2>Options</h2>
             <p>
               <label>
-                Theme:{' '}
+                <span>
+                  <IconTheme /> Theme
+                </span>
                 <select
                   id="theme-switcher"
                   value={theme}
@@ -950,7 +954,9 @@ export function App() {
             </p>
             <p>
               <label>
-                Unit system:{' '}
+                <span>
+                  <IconUnit /> Unit system
+                </span>
                 <select
                   id="unit-system-switcher"
                   value={unitSystem}

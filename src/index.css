@@ -35,6 +35,10 @@ select {
   padding: 0.2em;
 }
 
+svg {
+  vertical-align: middle;
+}
+
 .mapboxgl-canvas {
   transition: filter 0.5s ease-in-out;
 }
