@@ -9,6 +9,7 @@
   "dependencies": {
     "@mapbox/mapbox-gl-geocoder": "mapbox/mapbox-gl-geocoder",
     "@reach/rect": "~0.16.0",
+    "@rollup/plugin-replace": "^4.0.0",
     "awesome-debounce-promise": "~2.1.0",
     "haversine-distance": "~1.2.1",
     "humanize-duration": "~3.27.1",
@@ -18,7 +19,13 @@
     "pretty-metric": "~2.0.0",
     "react-map-gl": "~7.0.10",
     "react-spring-bottom-sheet": "~3.4.0",
-    "use-page-visibility": "~3.0.2"
+    "rollup-plugin-workbox": "~6.2.0",
+    "use-page-visibility": "~3.0.2",
+    "workbox-cacheable-response": "~6.5.2",
+    "workbox-expiration": "~6.5.2",
+    "workbox-precaching": "~6.5.2",
+    "workbox-routing": "~6.5.2",
+    "workbox-strategies": "~6.5.2"
   },
   "devDependencies": {
     "@iconify-json/ic": "~1.1.2",
