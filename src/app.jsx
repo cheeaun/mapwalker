@@ -217,7 +217,7 @@ export function App() {
         setSheetOpen(false);
       }, 300);
     }
-  }, [legendSheetOpen, markerSheetOpen, aboutSheetOpen]);
+  }, [legendSheetOpen, markerSheetOpen, aboutSheetOpen, optionsSheetOpen]);
 
   const [overviewMapExpanded, setOverviewMapExpanded] = useState(false);
   useEffect(() => {
